@@ -1,0 +1,12 @@
+#!usr/bin/env ruby
+
+begin
+  require 'ballad'
+rescue LoadError
+  require 'rubygems'
+  require 'ballad'
+end
+
+STATE_DIR = File.join(Dir.pwd, 'state')
+
+Rack::Handler::WEBrick.run Ballad::API.new(STATE_DIR)
