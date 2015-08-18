@@ -6,7 +6,6 @@ module Quest
       @quest_dir = Quest.config[:quest_dir]
       @state_dir = Quest.config[:state_dir]
       @active_quest = Quest.config[:active_quest]
-      #daemonize
     end
 
     # The serverspec os function creates an infinite loop.

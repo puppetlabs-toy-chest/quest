@@ -7,5 +7,6 @@ rescue LoadError
   require 'quest'
 end
 
-quest_watcher = Quest::QuestWatcher.new
-quest_watcher.start
+guide = Quest::QuestGuide.new
+
+guide.populate_web_dir
