@@ -6,6 +6,7 @@ module Quest
   @config = {
               :state_dir    => '/Users/Henner/Source/quest/spec/fixtures/state',
               :quest_dir    => '/Users/Henner/Source/courseware-lvm/quests',
+              :doc_root     => '/tmp',
               :global_watch => [],
               :quest_watch  => [],
               :active_quest => 'welcome',

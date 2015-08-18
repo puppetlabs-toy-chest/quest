@@ -10,11 +10,13 @@ Gem::Specification.new do |spec|
 
   spec.files = %w( README.md )
   spec.files += Dir['{bin,lib,spec}/**/*']
-  spec.executables = ['quest','ballad']
+  spec.executables = ['quest','ballad','questguide']
   spec.require_paths = ['lib']
   spec.add_dependency 'serverspec'
   spec.add_dependency 'json'
   spec.add_dependency 'filewatcher'
   spec.add_dependency 'rack'
   spec.add_dependency 'grape'
+  spec.add_dependency 'liquid'
+  spec.add_dependency 'redcarpet'
 end

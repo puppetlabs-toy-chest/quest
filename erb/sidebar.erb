@@ -1,0 +1,18 @@
+<aside id="sidebar-first" role="complementary">
+    <div class="content">
+        <h2>Quests</h2>
+        <ul class="menu">
+            <% for q in @quests %>
+                <% if q == @quest %>
+                    <li class="active">
+                        <a href="<%= quest_url(q) %>" class = "active"><%= q %></a>
+                    </li>
+                <% else %>
+                    <li>
+                        <a href="<%= quest_url(q) %>"><%= q %></a>
+                    </li>
+                <% end %>
+            <% end %>
+        </ul>
+    </div>
+</aside>
