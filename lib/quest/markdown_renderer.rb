@@ -33,27 +33,24 @@ module Quest
     end
 
     def place_web_files(quest)
-      asset_src = File.join(Quest.config[:quest_dir], quest, "assets")
+      asset_src = File.join(Quest.config[:quest_dir], quest, "assets/")
       asset_dest = File.join(Quest.config[:doc_root], "public/assets")
-      begin
-        FileUtils.cp_r(asset_src, asset_dest)
-      rescue Errno::ENOENT
+      if File.exist?(asset_src)
+        begin
+          FileUtils.cp_r(asset_src, asset_dest)
+        rescue Errno::ENOENT
+        end
       end
-      #public_src = File.join(Quest.config[:quest_dir], "public")
-      #public_dest = Quest.config[:doc_root]
     end
 
     def quest_url(quest)
-      File.join(Quest.config[:doc_root], "#{quest}.html")
+      "/#{quest}.html"
     end
 
     def populate_web_dir
-      ["public", "public/js", "public/css", "public/assets", "public/fonts"].each do |d|
-        begin
-          Dir.mkdir(File.join(Quest.config[:doc_root], d))
-        rescue Errno::EEXIST
-        end
-      end
+      public_src = File.join(File.expand_path("../../../public", __FILE__), ".")
+      public_dest = Quest.config[:doc_root]
+      FileUtils.cp_r(public_src, public_dest)
       @quests.each do |q|
         place_web_files(q)
         generate_quest_html(q)

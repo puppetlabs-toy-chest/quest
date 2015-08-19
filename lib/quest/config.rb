@@ -4,9 +4,9 @@ module Quest
 
   # Defaults
   @config = {
-              :state_dir    => '/Users/Henner/Source/quest/spec/fixtures/state',
-              :quest_dir    => '/Users/Henner/Source/courseware-lvm/quests',
-              :doc_root     => '/tmp',
+              :state_dir    => '/tmp/state',
+              :quest_dir    => '/usr/src/courseware-lvm/quests',
+              :doc_root     => '/var/www/html/questguide',
               :global_watch => [],
               :quest_watch  => [],
               :active_quest => 'welcome',
