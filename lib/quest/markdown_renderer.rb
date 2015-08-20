@@ -15,9 +15,9 @@ module Quest
       ERB.new(File.read(File.expand_path("../../../erb/#{template}.erb", __FILE__)), nil, '-')
     end
 
-    def parse_quest_content(quest)
+    def raw_quest(quest)
       File.open(File.join(Quest.config[:quest_dir], quest, "#{quest}.md"), "r") do |f|
-        @markdown.render(f.read)
+        f.read
       end
     end
 
@@ -26,8 +26,10 @@ module Quest
       ["header", "footer", "sidebar"].each do |template|
         instance_variable_set("@#{template}", load_erb(template).result(binding))
       end
-      @content = parse_quest_content(quest)
-      File.open(File.join(Quest.config[:doc_root], "#{quest}.html"), "w") do |f|
+      raw = raw_quest(@quest)
+      liquid_parsed = Liquid::Template.parse(raw).render
+      @content = @markdown.render(liquid_parsed)
+      File.open(File.join(Quest.config[:doc_root], "#{@quest}.html"), "w") do |f|
         f.write(load_erb("quest").result(binding))
       end
     end
