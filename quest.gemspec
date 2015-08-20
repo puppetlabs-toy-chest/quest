@@ -19,4 +19,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'grape'
   spec.add_dependency 'liquid'
   spec.add_dependency 'redcarpet'
+  spec.add_dependency 'rouge'
 end
