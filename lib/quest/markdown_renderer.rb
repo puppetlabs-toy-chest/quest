@@ -34,9 +34,9 @@ module Quest
       end
     end
 
-    def place_web_files(quest)
-      asset_src = File.join(Quest.config[:quest_dir], quest, "assets/")
-      asset_dest = File.join(Quest.config[:doc_root], "public/assets")
+    def copy_quest_assets(quest)
+      asset_src = File.join(Quest.config[:quest_dir], quest, "assets/.")
+      asset_dest = File.join(Quest.config[:doc_root], "assets")
       if File.exist?(asset_src)
         begin
           FileUtils.cp_r(asset_src, asset_dest)
@@ -50,11 +50,12 @@ module Quest
     end
 
     def populate_web_dir
-      public_src = File.join(File.expand_path("../../../public", __FILE__), ".")
+      FileUtils.mkdir_p(Quest.config[:doc_root])
+      public_src = File.join(File.expand_path("../../../public", __FILE__), '.')
       public_dest = Quest.config[:doc_root]
       FileUtils.cp_r(public_src, public_dest)
       @quests.each do |q|
-        place_web_files(q)
+        copy_quest_assets(q)
         generate_quest_html(q)
       end
     end
