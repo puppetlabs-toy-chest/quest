@@ -4,9 +4,10 @@ module Quest
 
   # Defaults
   @config = {
-              :state_dir    => '/tmp/state',
-              :quest_dir    => '/usr/src/courseware-lvm/quests',
+              :state_dir    => '/usr/local/quest/state',
+              :quest_dir    => File.join(Dir.pwd, 'quests'),
               :doc_root     => '/var/www/html/questguide',
+              :pidfile      => '/usr/local/quest/pidfile',
               :global_watch => [],
               :quest_watch  => [],
               :active_quest => 'welcome',
@@ -34,8 +35,7 @@ module Quest
     @config
   end
 
-  def self.initialize_directory_structure
-    FileUtils.mkdir_p @config[:quest_dir]
+  def self.initialize_state_dir
     FileUtils.mkdir_p @config[:state_dir]
   end
 

@@ -7,6 +7,6 @@ rescue LoadError
   require 'ballad'
 end
 
-STATE_DIR = File.join(Dir.pwd, 'state')
+STATE_DIR = File.join(Dir.pwd, '.state')
 
 Rack::Handler::WEBrick.run Ballad::API.new(STATE_DIR)

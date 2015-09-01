@@ -2,10 +2,38 @@
 
 begin
   require 'quest'
-rescue LoadError
+  require 'gli'
+rescue
   require 'rubygems'
   require 'quest'
+  require 'gli'
 end
 
-quest_watcher = Quest::QuestWatcher.new
-quest_watcher.start
+include GLI::App
+
+# Quest tools
+
+desc 'Start a quest'
+command :begin do |c|
+  c.action do |global_options, options, args|
+    # Validate args!
+    include Quest::Messenger
+    change_quest(args[0])
+  end
+end
+
+desc 'List available quests'
+command :list do |c|
+  c.action do |global_options, options, args|
+    true
+  end
+end
+
+desc 'Show the status of the current quest'
+command :list do |c|
+  c.action do |global_options, options, args|
+    true
+  end
+end
+
+exit run(ARGV)
