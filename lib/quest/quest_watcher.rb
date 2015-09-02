@@ -48,15 +48,15 @@ module Quest
       Quest.configure_with(File.join(@quest_dir, @active_quest, "config.json"))
     end
 
-    def daemonize
-      exit if fork
-      Process.setsid
-      exit if fork
-      Dir.chdir "/"
-      STDIN.reopen "/dev/null"
-      STDOUT.reopen "/dev/null", "a"
-      STDERR.reopen "/dev/null", "a"
-    end
+#    def daemonize
+#      exit if fork
+#      Process.setsid
+#      exit if fork
+#      Dir.chdir "/"
+#      STDIN.reopen "/dev/null"
+#      STDOUT.reopen "/dev/null", "a"
+#      STDERR.reopen "/dev/null", "a"
+#    end
 
     def exit_watcher
       if @watcher
@@ -128,8 +128,8 @@ module Quest
     end
 
     def run!
-      #check_pid
-      #daemonize
+      check_pid
+      Process.daemon
       write_pid
       trap_signals
       load_active_quest

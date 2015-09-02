@@ -6,6 +6,9 @@ module Quest
     def send_reset
       Process.kill("HUP", pid)
     end
+    def send_quit
+      Process.kill("QUIT", pid)
+    end
     def change_quest(quest)
       File.open(File.join(Quest.config[:state_dir], "active_quest.json"), "w") do |f|
         f.write({"active_quest" => quest}.to_json)
