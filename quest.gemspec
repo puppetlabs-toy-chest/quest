@@ -19,6 +19,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'grape'
   spec.add_dependency 'liquid'
   spec.add_dependency 'redcarpet'
-  spec.add_dependency 'rouge'
+  spec.add_dependency 'rouge', '~> 1.8', '!= 1.9.1'
   spec.add_dependency 'gli'
 end
