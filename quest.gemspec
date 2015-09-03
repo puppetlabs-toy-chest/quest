@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.files = %w( README.md )
   spec.files += Dir['{bin,lib,erb,public}/**/*']
-  spec.executables = ['quest','ballad','questguide']
+  spec.executables = ['quest','questctl']
   spec.require_paths = ['lib']
   spec.add_dependency 'serverspec'
   spec.add_dependency 'json'
@@ -20,4 +20,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'liquid'
   spec.add_dependency 'redcarpet'
   spec.add_dependency 'rouge'
+  spec.add_dependency 'gli'
 end

@@ -2,10 +2,55 @@
 
 begin
   require 'quest'
-rescue LoadError
+  require 'gli'
+rescue
   require 'rubygems'
   require 'quest'
+  require 'gli'
 end
 
-quest_watcher = Quest::QuestWatcher.new
-quest_watcher.start
+include GLI::App
+
+# Quest tools
+
+program_desc 'Track the status of quests and tasks.'
+
+desc 'Begin a quest'
+arg :quest_name
+arg_name 'quest_name' 
+command :begin do |c|
+  c.action do |global_options, options, args|
+    if args.length < 1
+      raise 'You must specify a quest name. Refer to the Quest Guide or use the "quest list" command.'
+    end
+    unless Quest.quests.include? args[0]
+      raise "#{args[0]} is not a valid quest name. Refer to the Quest Guide or use the \"quest list\" command."
+    end
+    include Quest::Messenger
+    change_quest(args[0])
+  end
+end
+
+desc 'List available quests'
+command :list do |c|
+  c.action do |global_options, options, args|
+    puts Quest.quests
+  end
+end
+
+desc 'Show status of the current quest'
+command :status do |c|
+  c.switch [:s], :desc => 'Show status in summary form.'
+  c.switch [:j], :desc => 'Show status in JSON format. (For debugging)'
+  c.action do |global_options, options, args|
+    if options[:s]
+      Quest.status_brief
+    elsif options[:j]
+      puts JSON.pretty_generate Quest.status_raw
+    else
+      Quest.status
+    end
+  end
+end
+
+exit run(ARGV)
