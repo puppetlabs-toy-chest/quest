@@ -1,7 +1,11 @@
 module Quest
   module Messenger
     def pid
-      File.read(Quest.config[:pidfile]).to_i
+      begin
+        File.read(Quest.config[:pidfile]).to_i
+      rescue
+        raise "The quest service isn't running. Use the questctl command to start the service."
+      end
     end
     def send_reset
       Process.kill("HUP", pid)
@@ -14,6 +18,7 @@ module Quest
         f.write({"active_quest" => quest}.to_json)
       end
       send_reset
+      puts "You are now on the " + Quest.active_quest.cyan + " quest."
     end
   end
 end
