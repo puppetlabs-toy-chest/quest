@@ -4,7 +4,7 @@ Quest-driven learning with RSpec and Serverspec.
 
 ### Description
 
-quest transforms a Markdown content and Serverspec tests into an interactive
+quest transforms Markdown content and Serverspec tests into an interactive
 learning system suitable for configuration management tools and topics.
 
 With quest, you can:
