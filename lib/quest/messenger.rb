@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module Quest
   module Messenger
     def pid

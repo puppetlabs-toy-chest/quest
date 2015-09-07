@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class String
 def black;          "\e[30m#{self}\e[0m" end
 def red;            "\e[31m#{self}\e[0m" end

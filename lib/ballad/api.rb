@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module Ballad
   class API < Grape::API
 

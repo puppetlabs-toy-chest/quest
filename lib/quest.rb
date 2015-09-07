@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'filewatcher'
 require 'json'
 require 'quest/quest_watcher'
