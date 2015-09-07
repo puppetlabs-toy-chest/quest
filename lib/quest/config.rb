@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Quest
   require 'fileutils'
 
@@ -65,12 +66,19 @@ module Quest
     puts "Quest: " + active_quest.cyan + " - Progress: #{complete} of #{total} Tasks."
   end
 
+  def self.status_brief_nocolor
+    s = status_raw
+    total = s["summary"]["example_count"]
+    complete = total - s["summary"]["failure_count"]
+    puts "Quest: " + active_quest + " - Progress: #{complete} of #{total} Tasks."
+  end  
+
   def self.status
     s = status_raw
     puts "Quest: " + "#{active_quest}\n".cyan
     s["examples"].each do |e|
       if e["status"] == "passed"
-        puts '✓ '.green + e["full_description"]
+        puts '√ '.green + e["full_description"]
       else
         puts 'X '.yellow + e["full_description"]
       end

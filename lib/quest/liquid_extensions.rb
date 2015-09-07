@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'rouge'
 
 class Tip < Liquid::Block

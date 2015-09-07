@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 describe "Task 1:" do
   it 'Use puppet -V to check the puppet version' do 
     file('/root/.bash_history').should contain 'puppet -V'

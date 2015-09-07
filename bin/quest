@@ -41,12 +41,15 @@ end
 desc 'Show status of the current quest'
 command :status do |c|
   c.switch [:s], :desc => 'Show status in summary form.'
+  c.switch [:n], :desc => 'Show status in summary form, no colorisation.'
   c.switch [:j], :desc => 'Show status in JSON format. (For debugging)'
   c.action do |global_options, options, args|
     if options[:s]
       Quest.status_brief
     elsif options[:j]
       puts JSON.pretty_generate Quest.status_raw
+    elsif options[:n]
+      puts JSON.pretty_generate Quest.status_brief_nocolor
     else
       Quest.status
     end
