@@ -22,14 +22,13 @@ module Quest
     end
 
     def generate_quest_html(quest)
-      @quest = quest
       ["header", "footer", "sidebar"].each do |template|
         instance_variable_set("@#{template}", load_erb(template).result(binding))
       end
-      raw = raw_quest(@quest)
+      raw = raw_quest(quest)
       liquid_parsed = Liquid::Template.parse(raw).render
       @content = @markdown.render(liquid_parsed)
-      File.open(File.join(Quest.config[:doc_root], "#{@quest}.html"), "w") do |f|
+      File.open(File.join(Quest.config[:doc_root], "#{quest}.html"), "w") do |f|
         f.write(load_erb("quest").result(binding))
       end
     end
@@ -49,6 +48,12 @@ module Quest
       "/#{quest}.html"
     end
 
+    def create_index_symlink(quest)
+      src = File.join(Quest.config[:doc_root], "#{quest}.html")
+      dest = File.join(Quest.config[:doc_root], "index.html")
+      FileUtils.ln_s(src, dest)
+    end
+
     def populate_web_dir
       FileUtils.mkdir_p(Quest.config[:doc_root])
       public_src = File.join(File.expand_path("../../../public", __FILE__), '.')
@@ -58,6 +63,7 @@ module Quest
         copy_quest_assets(q)
         generate_quest_html(q)
       end
+      create_index_symlink(@quests.first)
     end
 
   end
