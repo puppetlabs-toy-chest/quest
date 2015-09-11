@@ -31,7 +31,7 @@ module Quest
       loader = config.send(:formatter_loader)
       notifications = loader.send(:notifications_for, RSpec::Core::Formatters::JsonFormatter)
       reporter.register_listener(formatter, *notifications)
-      RSpec::Core::Runner.invoke(["#{@quest_dir}/#{@active_quest}/#{@active_quest}_spec.rb"])
+      RSpec::Core::Runner.run(["#{@quest_dir}/#{@active_quest}/#{@active_quest}_spec.rb"])
       File.open(File.join(@state_dir, "#{@active_quest}.json"), "w"){ |f| f.write(formatter.output_hash.to_json) }
       RSpec.reset
     end
