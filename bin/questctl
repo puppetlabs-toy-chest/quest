@@ -10,6 +10,7 @@ rescue
 end
 
 include GLI::App
+include Quest::Messenger
 
 # Controllers for the quest service
 # Move to questctl
@@ -20,7 +21,7 @@ desc 'Start the quest service'
 command :start do |c|
   c.switch [:d, :daemonize], :desc => 'Daemonize the quest watcher process. Defaults to true.', :default_value => true
   c.action do |global_options, options, args|
-    Quest.check_directory
+    save_state
     watcher = Quest::QuestWatcher.new(daemonize=options[:d])
     watcher.run!
   end
@@ -28,14 +29,12 @@ end
 desc 'Stop the quest service'
 command :stop do |c|
   c.action do |global_options, options, args|
-    include Quest::Messenger
     send_quit
   end
 end
 desc 'Restart the quest service'
 command :restart do |c|
   c.action do |global_options, options, args|
-    include Quest::Messenger
     send_quit
     watcher = Quest::QuestWatcher.new
     watcher.run!
@@ -50,9 +49,9 @@ end
 desc 'Show the status of the quest service'
 command :status do |c|
   c.action do |global_options, options, args|
-    if File.exist?(Quest.config[:pidfile])
+    if File.exist?(PIDFILE)
       puts "active"
-      puts "PID: " + File.read(Quest.config[:pidfile])
+      puts "PID: " + pid
     else
       puts "inactive"
     end
