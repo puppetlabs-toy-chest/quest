@@ -22,6 +22,14 @@ module Quest
       end
     end
 
+    def validate_quest_dir(path)
+      begin
+        read_json(File.join(path, 'index.json'))
+      rescue
+        raise "No quest index.json file found in #{path}. Run this command from a directory containing such a file, or specify one with the --quest_dir flag."
+      end
+    end
+
     def set_active_quest(quest)
       File.open(File.join(state['state_dir'], 'active_quest'), 'w') do |f|
         f.write(quest)
@@ -97,9 +105,10 @@ module Quest
 
     def pid
       begin
-        file.read(PIDFILE).to_i
+        File.read(PIDFILE).to_i
       rescue
-        raise "The quest service isn't running. Use the questctl command to start the service."
+        puts "The quest service isn't running. Use the questctl command to start the service."
+        raise
       end
     end
 

@@ -55,7 +55,7 @@ module Quest
     def check_pid
       case pid_status
       when :running, :not_owned
-        puts "A server is already running. Check #{PIDFILE}"
+        puts "The quest watcher is already running. Check #{PIDFILE}"
         exit 1
       when :dead
         File.delete(PIDFILE)

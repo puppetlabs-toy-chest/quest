@@ -20,8 +20,10 @@ program_desc 'Controller for the content and services behind the Quest tool.'
 desc 'Start the quest service'
 command :start do |c|
   c.switch [:d, :daemonize], :desc => 'Daemonize the quest watcher process. Defaults to true.', :default_value => true
+  c.flag [:q, :quest_dir, 'quest_dir'], :desc => 'Specify the quest content directory.'
   c.action do |global_options, options, args|
-    save_state
+    validate_quest_dir(options[:quest_dir])
+    save_state(options)
     watcher = Quest::QuestWatcher.new(daemonize=options[:d])
     watcher.run!
   end
@@ -51,7 +53,7 @@ command :status do |c|
   c.action do |global_options, options, args|
     if File.exist?(PIDFILE)
       puts "active"
-      puts "PID: " + pid
+      puts "PID: " + pid.to_s
     else
       puts "inactive"
     end
