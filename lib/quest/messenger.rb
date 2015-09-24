@@ -5,8 +5,8 @@ module Quest
 
     require 'fileutils'
 
-    STATE_DIR = '/usr/local/quest'
-    PIDFILE = File.join(STATE_DIR, 'pidfile')
+    STATE_DIR = '/var/opt/quest'
+    PIDFILE = '/var/run/quest.pid'
 
     def set_state(opts={})
       quest_dir = opts[:quest_dir] || File.join(Dir.pwd, 'quests')
@@ -17,7 +17,7 @@ module Quest
     end
 
     def save_state(opts={})
-      File.open('/usr/local/quest/state.json', 'w') do |f|
+      File.open(File.join(STATE_DIR, 'state.json'), 'w') do |f|
         f.write(set_state(opts).to_json)
       end
     end
