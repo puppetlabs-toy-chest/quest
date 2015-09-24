@@ -31,13 +31,13 @@ module Quest
     end
 
     def set_active_quest(quest)
-      File.open(File.join(state['state_dir'], 'active_quest'), 'w') do |f|
+      File.open(File.join(STATE_DIR, 'active_quest'), 'w') do |f|
         f.write(quest)
       end
     end
 
     def set_first_quest
-      first_quest = get_state_item('quests').first
+      first_quest = quests.first
       set_active_quest(first_quest)
     end
 
@@ -58,7 +58,7 @@ module Quest
     end
 
     def quests
-      get_state_hash['quest_dir']
+      read_json(File.join(quest_dir, 'index.json'))
     end
 
     def active_quest

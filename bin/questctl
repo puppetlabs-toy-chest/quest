@@ -23,9 +23,12 @@ command :start do |c|
   c.flag [:q, :quest_dir, 'quest_dir'], :desc => 'Specify the quest content directory.'
   c.action do |global_options, options, args|
     validate_quest_dir(options[:quest_dir])
+    initialize_state_dir
     save_state(options)
+    set_first_quest
     watcher = Quest::QuestWatcher.new(daemonize=options[:d])
     watcher.run!
+    puts "PID: " + pid.to_s
   end
 end
 desc 'Stop the quest service'
