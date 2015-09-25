@@ -8,6 +8,7 @@ module Quest
       # Require serverspec here because otherwise it conflicts with
       # the gli gem.
       require 'serverspec'
+      require 'rspec/autorun'
 
       # The serverspec os function creates an infinite loop.
       # Setting it manually prevents the function from running.
@@ -35,10 +36,12 @@ module Quest
       RSpec.reset
     end
 
-    def exit_watcher
+    def restart_watcher
       if @watcher
-        @watcher.stop
+        @watcher.pause
         @watcher.finalize
+        @watcher.filenames = quest_watch
+        @watcher.resume
       end
     end
 
@@ -76,23 +79,17 @@ module Quest
 
     def trap_signals
       trap(:HUP) do
-        restart
+        restart_watcher
       end
     end
 
     def start_watcher
       @watcher = FileWatcher.new(quest_watch)
-      thread = Thread.new(@watcher) do |watcher|
+      @watcher_thread = Thread.new(@watcher) do |watcher|
         watcher.watch do |f|
           run_specs
         end
       end
-    end
-
-    def restart
-      exit_watcher
-      run_specs
-      start_watcher
     end
 
     def run!
@@ -100,7 +97,6 @@ module Quest
       Process.daemon if @daemonize
       write_pid
       trap_signals
-      run_specs
       start_watcher
       thread = Thread.new { sleep }
       thread.join
