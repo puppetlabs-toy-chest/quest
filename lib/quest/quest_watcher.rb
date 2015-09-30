@@ -31,32 +31,32 @@ module Quest
       loader = config.send(:formatter_loader)
       notifications = loader.send(:notifications_for, RSpec::Core::Formatters::JsonFormatter)
       reporter.register_listener(formatter, *notifications)
-      logger.info("Running tests in #{quest_dir}/#{active_quest}/#{active_quest}_spec.rb")
+      Quest::LOGGER.info("Running tests in #{quest_dir}/#{active_quest}/#{active_quest}_spec.rb")
       RSpec::Core::Runner.run(["#{quest_dir}/#{active_quest}/#{active_quest}_spec.rb"])
       output_file = File.join(STATE_DIR, "#{active_quest}.json")
-      logger.info("Writing RSpec output to #{output_file}")
+      Quest::LOGGER.info("Writing RSpec output to #{output_file}")
       File.open(output_file, "w"){ |f| f.write(formatter.output_hash.to_json) }
-      logger.info("Resetting RSpec")
+      Quest::LOGGER.info("Resetting RSpec")
       RSpec.reset
     end
 
     def restart_watcher
       if @watcher
-        logger.info("Pausing watcher")
+        Quest::LOGGER.info("Pausing watcher")
         @watcher.pause
-        logger.info("Finalizing watcher")
+        Quest::LOGGER.info("Finalizing watcher")
         @watcher.finalize
-        logger.info("Setting watcher filenames to #{quest_watch}")
+        Quest::LOGGER.info("Setting watcher filenames to #{quest_watch}")
         @watcher.filenames = quest_watch
-        logger.info("Resuming watcher")
+        Quest::LOGGER.info("Resuming watcher")
         @watcher.resume
       else
-        logger.info("No watcher instance found. Skipping watcher restart.")
+        Quest::LOGGER.info("No watcher instance found. Skipping watcher restart.")
       end
     end
 
     def write_pid
-      logger.info("Writing PID to #{PIDFILE}")
+      Quest::LOGGER.info("Writing PID to #{PIDFILE}")
       begin
         File.open(PIDFILE, File::CREAT | File::EXCL | File::WRONLY){|f| f.write("#{Process.pid}") }
         at_exit { File.delete(PIDFILE) if File.exists?(PIDFILE) }
@@ -67,7 +67,7 @@ module Quest
     end
 
     def check_pid
-      logger.info('Checking PID')
+      Quest::LOGGER.info('Checking PID')
       case pid_status
       when :running, :not_owned
         puts "The quest watcher is already running. Check #{PIDFILE}"
@@ -90,16 +90,16 @@ module Quest
     end
 
     def trap_signals
-      logger.info("Setting trap for HUP signal")
+      Quest::LOGGER.info("Setting trap for HUP signal")
       trap(:HUP) do
         restart_watcher
       end
     end
 
     def start_watcher
-      logger.info('Starting initial spec run')
+      Quest::LOGGER.info('Starting initial spec run')
       run_specs
-      logger.info("Initializing watcher watching for changes in #{quest_watch}")
+      Quest::LOGGER.info("Initializing watcher watching for changes in #{quest_watch}")
       @watcher = FileWatcher.new(quest_watch)
       @watcher_thread = Thread.new(@watcher) do |watcher|
         watcher.watch do |f|
@@ -113,9 +113,9 @@ module Quest
       spec_helper = File.join(quest_dir, 'spec_helper.rb')
       if File.exists?(spec_helper)
         require File.join(spec_helper)
-        logger.info("Required #{spec_helper}")
+        Quest::LOGGER.info("Required #{spec_helper}")
       else
-        logger.info("No spec_helper.rb file found in #{quest_dir}")
+        Quest::LOGGER.info("No spec_helper.rb file found in #{quest_dir}")
       end
     end
 
