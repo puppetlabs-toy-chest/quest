@@ -31,8 +31,9 @@ module Quest
       loader = config.send(:formatter_loader)
       notifications = loader.send(:notifications_for, RSpec::Core::Formatters::JsonFormatter)
       reporter.register_listener(formatter, *notifications)
-      Quest::LOGGER.info("Running tests in #{quest_dir}/#{active_quest}/#{active_quest}_spec.rb")
-      RSpec::Core::Runner.run(["#{quest_dir}/#{active_quest}/#{active_quest}_spec.rb"])
+      spec_file = File.join(quest_dir, active_quest, "#{active_quest}_spec.rb")
+      Quest::LOGGER.info("Running tests in #{spec_file}")
+      RSpec::Core::Runner.run([spec_file])
       output_file = File.join(STATE_DIR, "#{active_quest}.json")
       Quest::LOGGER.info("Writing RSpec output to #{output_file}")
       File.open(output_file, "w"){ |f| f.write(formatter.output_hash.to_json) }
