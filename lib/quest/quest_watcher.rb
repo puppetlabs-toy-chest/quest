@@ -125,6 +125,7 @@ module Quest
       Process.daemon if @daemonize
       write_pid
       trap_signals
+      load_helper
       start_watcher
       thread = Thread.new { sleep }
       thread.join
