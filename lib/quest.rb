@@ -7,4 +7,4 @@ require 'quest/markdown_renderer'
 require 'quest/liquid_extensions'
 require 'quest/colorization'
 
-logger = Logger.new
+logger = Logger.new(STDOUT)
