@@ -6,19 +6,22 @@ Gem::Specification.new do |spec|
   spec.version = '0.0.1'
   spec.authors = ['Kevin Henner']
   spec.email = ['kevin@puppetlabs.com']
-  spec.summary = 'Quest tracks completion of learning tasks and provides a RESTful API for monitoring their status.'
+  spec.summary = 'Track completion of configuration management tasks.'
+  spec.description = "quest uses serverspec to track completion of configuration management related learning tasks."
+  spec.homepage = 'http://github.com/puppetlabs/quest'
+  spec.license = 'Apache 2.0'
 
-  spec.files = %w( README.md )
+  spec.files = %w( README.md LICENSE )
   spec.files += Dir['{bin,lib,erb,public}/**/*']
   spec.executables = ['quest','questctl']
   spec.require_paths = ['lib']
-  spec.add_dependency 'serverspec'
-  spec.add_dependency 'json'
-  spec.add_dependency 'filewatcher'
-  spec.add_dependency 'rack'
-  spec.add_dependency 'grape'
-  spec.add_dependency 'liquid'
-  spec.add_dependency 'redcarpet'
-  spec.add_dependency 'rouge', '~> 1.8', '!= 1.9.1'
-  spec.add_dependency 'gli'
+  spec.add_dependency 'serverspec', '~> 2.19'
+  spec.add_dependency 'json', '~> 1.7'
+  spec.add_dependency 'filewatcher', '~> 0.5'
+  spec.add_dependency 'rack', '~> 1.6'
+  spec.add_dependency 'grape', '~> 0.12'
+  spec.add_dependency 'liquid', '~> 2.6'
+  spec.add_dependency 'redcarpet', '~> 3.2'
+  spec.add_dependency 'rouge', '~> 1.8', '!= 1.9'
+  spec.add_dependency 'gli', '~> 2.12'
 end
