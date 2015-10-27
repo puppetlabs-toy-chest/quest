@@ -1,5 +1,6 @@
 require 'filewatcher'
 require 'json'
+require 'quest/logger'
 require 'quest/messenger'
 require 'quest/quest_watcher'
 require 'quest/markdown_renderer'
