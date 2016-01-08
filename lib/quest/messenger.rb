@@ -73,34 +73,37 @@ module Quest
       get_quest_config_hash['quest_watch']
     end
 
-    def status_raw
-      JSON.parse(File.read(File.join(STATE_DIR, "#{active_quest}.json")))
-    end
+    def status( options = {:brief => false, :color => true, :raw => false } )
+      # Parse the Raw status
+      s = JSON.parse(File.read(File.join(STATE_DIR, "#{active_quest}.json")))
 
-    def status_brief
-      s = status_raw
-      total = s["summary"]["example_count"]
-      complete = total - s["summary"]["failure_count"]
-      puts "Quest: " + active_quest.cyan + " - Progress: #{complete} of #{total} Tasks."
-    end
-
-    def status_brief_nocolor
-      s = status_raw
-      total = s["summary"]["example_count"]
-      complete = total - s["summary"]["failure_count"]
-      puts "Quest: " + active_quest + " - Progress: #{complete} of #{total} Tasks."
-    end
-
-    def status
-      s = status_raw
-      puts "Quest: " + "#{active_quest}\n".cyan
-      s["examples"].each do |e|
-        if e["status"] == "passed"
-          puts '√ '.green + e["full_description"]
-        else
-          puts 'X '.yellow + e["full_description"]
-        end
+      if options[:color] then
+        quest_name = active_quest.cyan
+      else
+        quest_name = active_quest
       end
+
+      if options[:raw] then
+        output = s
+      else
+        output = "Quest: " + quest_name
+      end
+
+      if options[:brief] then
+        total = s["summary"]["example_count"]
+        complete = total - s["summary"]["failure_count"]
+        output.append " - Progress: #{complete} of #{total} Tasks."
+      else
+        s["examples"].each do |e|
+          if e["status"] == "passed"
+            output.append '√ '.green + e["full_description"]
+          else
+            output.append 'X '.yellow + e["full_description"]
+          end
+        end
+      end  
+
+      output
     end
 
     def pid
