@@ -74,31 +74,25 @@ module Quest
     end
 
     def status( options = {:brief => false, :color => true, :raw => false } )
-      # Parse the Raw status
-      s = JSON.parse(File.read(File.join(STATE_DIR, "#{active_quest}.json")))
+      raw_status = JSON.parse(File.read(File.join(STATE_DIR, "#{active_quest}.json")))
 
-      if options[:color] then
-        quest_name = active_quest.cyan
-      else
-        quest_name = active_quest
-      end
-
-      if options[:raw] then
-        output = s
-      else
-        output = "Quest: " + quest_name
-      end
+      quest_name = options[:color] ? active_quest.cyan : active_quest
+      output = options[:raw] ? raw_status | "Quest: " + quest_name
 
       if options[:brief] then
-        total = s["summary"]["example_count"]
-        complete = total - s["summary"]["failure_count"]
-        output.append " - Progress: #{complete} of #{total} Tasks."
+        total = raw_status["summary"]["example_count"]
+        complete = total - raw_status["summary"]["failure_count"]
+        output << " - Progress: #{complete} of #{total} Tasks."
       else
-        s["examples"].each do |e|
-          if e["status"] == "passed"
-            output.append '√ '.green + e["full_description"]
+        # Add line break after quest name for full output
+        output << '\n'
+        raw_status["examples"].each do |example|
+          if example["status"] == "passed"
+            output << '√ '.green
           else
-            output.append 'X '.yellow + e["full_description"]
+            output << 'X '.yellow
+          end
+            output << example["full_description"] + '\n'
           end
         end
       end  
