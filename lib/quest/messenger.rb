@@ -77,7 +77,7 @@ module Quest
       raw_status = JSON.parse(File.read(File.join(STATE_DIR, "#{active_quest}.json")))
 
       quest_name = options[:color] ? active_quest.cyan : active_quest
-      output = options[:raw] ? raw_status | "Quest: " + quest_name
+      output = options[:raw] ? raw_status + '\n' | "Quest: " + quest_name
 
       if options[:brief] then
         total = raw_status["summary"]["example_count"]
