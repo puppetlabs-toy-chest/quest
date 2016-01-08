@@ -45,13 +45,13 @@ command :status do |c|
   c.switch [:j], :desc => 'Show status in JSON format. (For debugging)'
   c.action do |global_options, options, args|
     if options[:s]
-      puts status(:brief => true)
+      print status(:brief => true)
     elsif options[:n]
-      puts status(:brief => true, :color => false)
+      print status(:brief => true, :color => false)
     elsif options[:j]
-      puts status(:raw => true) 
+      print status(:raw => true) 
     else
-      puts status
+      print status
     end
   end
 end
