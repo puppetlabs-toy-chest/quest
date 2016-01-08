@@ -23,7 +23,10 @@ module Quest
 
     def run_specs
       config = RSpec.configuration
+      
+      # Disable Standard out
       config.output_stream = File.open("/dev/null", "w")
+
       # This is some messy reach-around coding to get the JsonFormatter to work
       formatter = RSpec::Core::Formatters::JsonFormatter.new(config.output_stream)
       reporter  = RSpec::Core::Reporter.new(config)
@@ -31,12 +34,21 @@ module Quest
       loader = config.send(:formatter_loader)
       notifications = loader.send(:notifications_for, RSpec::Core::Formatters::JsonFormatter)
       reporter.register_listener(formatter, *notifications)
+      # End workaround
+      
+      # Get the current quest spec
       spec_file = File.join(quest_dir, active_quest, "#{active_quest}_spec.rb")
+
+      # Run the test
       Quest::LOGGER.info("Running tests in #{spec_file}")
       RSpec::Core::Runner.run([spec_file])
+      
+      # Store test results
       output_file = File.join(STATE_DIR, "#{active_quest}.json")
       Quest::LOGGER.info("Writing RSpec output to #{output_file}")
       File.open(output_file, "w"){ |f| f.write(formatter.output_hash.to_json) }
+      
+      # Clean up for next spec
       Quest::LOGGER.info("Resetting RSpec")
       RSpec.reset
     end
