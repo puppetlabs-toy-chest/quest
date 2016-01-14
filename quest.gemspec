@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name = 'quest'
-  spec.version = '0.0.2'
+  spec.version = '0.0.3'
   spec.authors = ['Kevin Henner']
   spec.email = ['kevin@puppetlabs.com']
   spec.summary = 'Track completion of configuration management tasks.'
@@ -20,8 +20,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'filewatcher', '~> 0.5'
   spec.add_dependency 'rack', '~> 1.6'
   spec.add_dependency 'grape', '~> 0.12'
-  spec.add_dependency 'liquid', '~> 2.6'
-  spec.add_dependency 'redcarpet', '~> 3.2'
-  spec.add_dependency 'rouge', '~> 1.8', '!= 1.9'
   spec.add_dependency 'gli', '~> 2.12'
 end
