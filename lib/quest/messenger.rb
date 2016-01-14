@@ -26,7 +26,8 @@ module Quest
       begin
         read_json(File.join(path, 'index.json'))
       rescue
-        raise "No quest index.json file found in #{path}. Run this command from a directory containing such a file, or specify one with the --quest_dir flag."
+        puts "No quest index.json file found in #{path}. Run this command from a directory containing such a file, or specify one with the --quest_dir flag."
+        exit 1
       end
     end
 
@@ -62,7 +63,7 @@ module Quest
     end
 
     def spec_file
-      File.join(quest_dir, active_quest, "#{active_quest}_spec.rb")
+      File.join(quest_dir, "#{active_quest}_spec.rb")
     end
 
     def quests
@@ -77,37 +78,33 @@ module Quest
       File.join(STATE_DIR, "#{active_quest}.json")
     end
 
-    def get_quest_config_hash
-      read_json(File.join(quest_dir, active_quest, 'config.json'))
-    end
-
+    # Merge global list with quest-specific list
     def quest_watch
-      get_quest_config_hash['quest_watch']
+      read_json(File.join(quest_dir, "watch_list.json"))
     end
 
     def status( options = {:brief => false, :color => true, :raw => false } )
       raw_status = JSON.parse(File.read(File.join(STATE_DIR, "#{active_quest}.json")))
 
       quest_name = options[:color] ? active_quest.cyan : active_quest
-      output = options[:raw] ? raw_status + '\n' | "Quest: " + quest_name
+      output = options[:raw] ? raw_status + '\n' : "Quest: " + quest_name
 
-      if options[:brief] then
+      if options[:brief]
         total = raw_status["summary"]["example_count"]
         complete = total - raw_status["summary"]["failure_count"]
         output << " - Progress: #{complete} of #{total} Tasks."
       else
         # Add line break after quest name for full output
-        output << '\n'
+        output << "\n"
         raw_status["examples"].each do |example|
           if example["status"] == "passed"
             output << '√ '.green
           else
             output << 'X '.yellow
           end
-            output << example["full_description"] + '\n'
-          end
+          output << example["full_description"] + "\n"
         end
-      end  
+      end
 
       output
     end
