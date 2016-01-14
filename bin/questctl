@@ -28,7 +28,6 @@ command :start do |c|
     set_first_quest
     watcher = Quest::QuestWatcher.new(daemonize=options[:d])
     watcher.run!
-    puts "PID: " + pid.to_s
   end
 end
 desc 'Stop the quest service'
