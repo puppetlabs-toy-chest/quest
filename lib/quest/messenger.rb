@@ -57,12 +57,24 @@ module Quest
       get_state_hash['quest_dir']
     end
 
+    def spec_helper
+      File.join(quest_dir, 'spec_helper.rb')
+    end
+
+    def spec_file
+      File.join(quest_dir, active_quest, "#{active_quest}_spec.rb")
+    end
+
     def quests
       read_json(File.join(quest_dir, 'index.json'))
     end
 
     def active_quest
       File.read(File.join(STATE_DIR, 'active_quest'))
+    end
+
+    def output_file
+      File.join(STATE_DIR, "#{active_quest}.json")
     end
 
     def get_quest_config_hash

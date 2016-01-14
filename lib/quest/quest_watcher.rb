@@ -13,7 +13,6 @@ module Quest
       # The serverspec os function creates an infinite loop.
       # Setting it manually prevents the function from running.
       # Note that this is a temporary workaround, and this data is wrong!
-      #set :os, {:family=>"darwin", :release=>"10", :arch=>"x86_64"}
       set :os, {}
       set :backend, :exec
 
@@ -23,7 +22,7 @@ module Quest
 
     def run_specs
       config = RSpec.configuration
-      
+
       # Disable Standard out
       config.output_stream = File.open("/dev/null", "w")
 
@@ -35,43 +34,39 @@ module Quest
       notifications = loader.send(:notifications_for, RSpec::Core::Formatters::JsonFormatter)
       reporter.register_listener(formatter, *notifications)
       # End workaround
-      
-      # Get the current quest spec
-      spec_file = File.join(quest_dir, active_quest, "#{active_quest}_spec.rb")
 
       # Run the test
-      Quest::LOGGER.info("Running tests in #{spec_file}")
+      Quest::LOGGER.info("Beginning run of tests in #{spec_file}")
       RSpec::Core::Runner.run([spec_file])
-      
+
       # Store test results
-      output_file = File.join(STATE_DIR, "#{active_quest}.json")
-      Quest::LOGGER.info("Writing RSpec output to #{output_file}")
       File.open(output_file, "w"){ |f| f.write(formatter.output_hash.to_json) }
-      
+      Quest::LOGGER.info("RSpec output written to #{output_file}")
+
       # Clean up for next spec
-      Quest::LOGGER.info("Resetting RSpec")
       RSpec.reset
+      Quest::LOGGER.info("RSpec reset")
     end
 
     def restart_watcher
       if @watcher
-        Quest::LOGGER.info("Pausing watcher")
         @watcher.pause
-        Quest::LOGGER.info("Finalizing watcher")
+        Quest::LOGGER.info("Watcher paused")
         @watcher.finalize
-        Quest::LOGGER.info("Setting watcher filenames to #{quest_watch}")
+        Quest::LOGGER.info("Watcher finalized pending runs")
         @watcher.filenames = quest_watch
-        Quest::LOGGER.info("Resuming watcher")
+        Quest::LOGGER.info("Watcher file names set to #{quest_watch}")
         @watcher.resume
+        Quest::LOGGER.info("Watcher resumed")
       else
         Quest::LOGGER.info("No watcher instance found. Skipping watcher restart.")
       end
     end
 
     def write_pid
-      Quest::LOGGER.info("Writing PID to #{PIDFILE}")
       begin
         File.open(PIDFILE, File::CREAT | File::EXCL | File::WRONLY){|f| f.write("#{Process.pid}") }
+        Quest::LOGGER.info("PID written to #{PIDFILE}")
         at_exit { File.delete(PIDFILE) if File.exists?(PIDFILE) }
       rescue Errno::EEXIST
         check_pid
@@ -80,7 +75,6 @@ module Quest
     end
 
     def check_pid
-      Quest::LOGGER.info('Checking PID')
       case pid_status
       when :running, :not_owned
         puts "The quest watcher is already running. Check #{PIDFILE}"
@@ -103,10 +97,10 @@ module Quest
     end
 
     def trap_signals
-      Quest::LOGGER.info("Setting trap for HUP signal")
       trap(:HUP) do
         restart_watcher
       end
+      Quest::LOGGER.info("Trap for HUP signal set")
     end
 
     def start_watcher
@@ -115,7 +109,7 @@ module Quest
       Quest::LOGGER.info("Initializing watcher watching for changes in #{quest_watch}")
       @watcher = FileWatcher.new(quest_watch)
       @watcher_thread = Thread.new(@watcher) do |watcher|
-        watcher.watch do |f|
+        watcher.watch do |changed_file_path|
           run_specs
         end
       end
@@ -123,15 +117,15 @@ module Quest
 
     def load_helper
       # Require a spec_helper file if it exists
-      spec_helper = File.join(quest_dir, 'spec_helper.rb')
       if File.exists?(spec_helper)
-        require File.join(spec_helper)
-        Quest::LOGGER.info("Required #{spec_helper}")
+        require spec_helper
+        Quest::LOGGER.info("Loaded spec helper at #{spec_helper}")
       else
-        Quest::LOGGER.info("No spec_helper.rb file found in #{quest_dir}")
+        Quest::LOGGER.info("No spec_helper file found in #{quest_dir}")
       end
     end
 
+    # This is the main function to set up and run the watcher process 
     def run!
       check_pid
       Process.daemon if @daemonize
@@ -139,6 +133,7 @@ module Quest
       trap_signals
       load_helper
       start_watcher
+      # Keep a sleeping thread to handle signals. 
       thread = Thread.new { sleep }
       thread.join
     end
