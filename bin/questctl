@@ -15,7 +15,7 @@ include Quest::Messenger
 # Controllers for the quest service
 # Move to questctl
 
-program_desc 'Controller for the content and services behind the Quest tool.'
+program_desc 'Controller for quest tool services.'
 
 desc 'Start the quest service'
 command :start do |c|
@@ -45,12 +45,6 @@ command :restart do |c|
     watcher.run!
   end
 end
-desc 'Build quest html content to doc_root directory'
-command :build do |c|
-  c.action do |global_options, options, args|
-    Quest::QuestGuide.new.populate_web_dir
-  end
-end
 desc 'Show the status of the quest service'
 command :status do |c|
   c.action do |global_options, options, args|
@@ -62,6 +56,5 @@ command :status do |c|
     end
   end
 end
-
 
 exit run(ARGV)
