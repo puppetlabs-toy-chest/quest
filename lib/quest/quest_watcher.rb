@@ -110,6 +110,7 @@ module Quest
       @watcher = FileWatcher.new(quest_watch)
       @watcher_thread = Thread.new(@watcher) do |watcher|
         watcher.watch do |changed_file_path|
+          Quest::LOGGER.info("Watcher triggered by a change to #{changed_file_path}")
           run_specs
         end
       end
