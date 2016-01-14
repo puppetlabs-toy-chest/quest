@@ -1,0 +1,17 @@
+# Ruby
+*.gem
+*.rbc
+/pkg/
+/tmp/
+/.bundle/
+.rvmrc
+Gemfile.lock
+
+# Vim
+*.swp
+
+# OSX
+.DS_Store
+
+# Linux
+*~
