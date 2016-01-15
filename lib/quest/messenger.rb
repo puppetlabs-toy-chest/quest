@@ -83,11 +83,16 @@ module Quest
       read_json(File.join(quest_dir, "watch_list.json"))
     end
 
+    def raw_status
+      JSON.parse(File.read(File.join(STATE_DIR, "#{active_quest}.json")))
+    end
+
     def status( options = {:brief => false, :color => true, :raw => false } )
-      raw_status = JSON.parse(File.read(File.join(STATE_DIR, "#{active_quest}.json")))
+      return raw_status if options[:raw]
 
       quest_name = options[:color] ? active_quest.cyan : active_quest
-      output = options[:raw] ? raw_status + '\n' : "Quest: " + quest_name
+
+      output = "Quest: " + quest_name
 
       if options[:brief]
         total = raw_status["summary"]["example_count"]
