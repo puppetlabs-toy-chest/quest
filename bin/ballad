@@ -1,12 +1,10 @@
 #!usr/bin/env ruby
 
 begin
-  require 'ballad'
+  require 'quest'
 rescue LoadError
   require 'rubygems'
-  require 'ballad'
+  require 'quest'
 end
 
-STATE_DIR = File.join(Dir.pwd, '.state')
-
-Rack::Handler::WEBrick.run Ballad::API.new(STATE_DIR)
+Rack::Handler::WEBrick.run(Quest::API.new, {:Port => 9393, :Host => '0.0.0.0', :Bind => '0.0.0.0'})
