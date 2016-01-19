@@ -1,0 +1,5 @@
+0.0.4
+  * Merged the ballad API component into the quest module.
+  * Fixed a few issues to get the API working correctly.
+  * Updated the README to reflect some prior changes.
+  * Added this changelog file.

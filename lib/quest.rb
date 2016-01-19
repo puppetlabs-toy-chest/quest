@@ -1,6 +1,8 @@
 require 'filewatcher'
 require 'json'
+require 'grape'
 require 'quest/logger'
 require 'quest/messenger'
 require 'quest/quest_watcher'
 require 'quest/colorization'
+require 'quest/api'

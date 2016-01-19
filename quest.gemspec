@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name = 'quest'
-  spec.version = '0.0.3'
+  spec.version = '0.0.4'
   spec.authors = ['Kevin Henner']
   spec.email = ['kevin@puppetlabs.com']
   spec.summary = 'Track completion of configuration management tasks.'
@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
 
   spec.files = %w( README.md LICENSE )
   spec.files += Dir['{bin,lib,erb,public}/**/*']
-  spec.executables = ['quest','questctl']
+  spec.executables = ['quest','questctl', 'ballad']
   spec.require_paths = ['lib']
   spec.add_dependency 'serverspec', '~> 2.19'
   spec.add_dependency 'json', '~> 1.7'
