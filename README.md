@@ -26,13 +26,19 @@ and works with any set of tests and metadata following the same pattern.
 
 Any project you wish to use with this tool must contain a directory with the following contents:
 
-An `index.json` file consisting of an array of available quest names in an appropriate order.
+An `index.json` file consisting with available quest names, the list of files to watch for each quest
+and an optional setup command for that quest. These setup commands will be run with the directory
+of your tests as the current working directory when a user begins the quest.
 
 ```
-[
-  "my_first_quest",
-  "my_second_quest"
-]
+{
+  "welcome": {
+    "watch_list": [
+      "/root/.bash_history"
+    ],
+    "setup_command": "puppet apply ./manifests/welcome.pp"
+  }
+}
 ```
 
 A series of `*_spec.rb` files corresponding the the quest names specified in the `index.json`.
