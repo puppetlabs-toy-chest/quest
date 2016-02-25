@@ -26,7 +26,7 @@ module Quest
       begin
         read_json(File.join(path, 'index.json'))
       rescue
-        puts "No quest index.json file found in #{path}. Run this command from a directory containing such a file, or specify one with the --quest_dir flag."
+        puts "No valid quest index.json file found in #{path}. Run this command from a directory containing such a file, or specify one with the --quest_dir flag."
         exit 1
       end
     end
@@ -34,6 +34,17 @@ module Quest
     def set_active_quest(quest)
       File.open(File.join(STATE_DIR, 'active_quest'), 'w') do |f|
         f.write(quest)
+      end
+      run_setup_command
+    end
+
+    def run_setup_command
+      if setup_command
+        begin
+          Dir.chdir(quest_dir){`#{setup_command}`}
+        rescue
+          puts "Setup for #{active_quest} failed"
+        end
       end
     end
 
@@ -67,7 +78,7 @@ module Quest
     end
 
     def quests
-      read_json(File.join(quest_dir, 'index.json'))
+      read_json(File.join(quest_dir, 'index.json')).keys
     end
 
     def active_quest
@@ -78,9 +89,12 @@ module Quest
       File.join(STATE_DIR, "#{active_quest}.json")
     end
 
-    # Merge global list with quest-specific list
     def quest_watch
-      read_json(File.join(quest_dir, "watch_list.json"))
+      read_json(File.join(quest_dir, "index.json"))[active_quest]["watch_list"]
+    end
+
+    def setup_command
+      read_json(File.join(quest_dir, "index.json"))[active_quest]["setup_command"]
     end
 
     def raw_status
