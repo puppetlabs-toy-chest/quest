@@ -35,7 +35,17 @@ module Quest
       File.open(File.join(STATE_DIR, 'active_quest'), 'w') do |f|
         f.write(quest)
       end
-      `#{setup_command}`
+      run_setup_command
+    end
+
+    def run_setup_command
+      if setup_command
+        begin
+          Dir.chdir(quest_dir){`#{setup_command}`}
+        rescue
+          puts "Setup for #{active_quest} failed"
+        end
+      end
     end
 
     def set_first_quest
