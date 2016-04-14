@@ -106,8 +106,6 @@ module Quest
     end
 
     def status( options = {:brief => false, :color => true, :raw => false } )
-      # If the status json isn't explicitly passed in, load it from the saved json file
-
       return raw_status if options[:raw]
 
       quest_name = options[:color] ? active_quest.cyan : active_quest
