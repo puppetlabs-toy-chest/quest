@@ -40,8 +40,13 @@ module Quest
       RSpec::Core::Runner.run([spec_file])
 
       # Store test results
-      File.open(output_file, "w"){ |f| f.write(formatter.output_hash.to_json) }
-      Quest::LOGGER.info("RSpec output written to #{output_file}")
+      File.open(json_output_file, "w"){ |f| f.write(formatter.output_hash.to_json) }
+      Quest::LOGGER.info("RSpec output written to #{json_output_file}")
+
+      # Store status line output
+      status_line = status( options = {:brief => true, :color => false, :raw => false })
+      File.open(status_line_output_file, "w"){ |f| f.write(status_line) }
+      Quest::LOGGER.info("Status line written to #{status_line_output_file}")
 
       # Clean up for next spec
       RSpec.reset
@@ -126,7 +131,7 @@ module Quest
       end
     end
 
-    # This is the main function to set up and run the watcher process 
+    # This is the main function to set up and run the watcher process
     def run!
       check_pid
       Process.daemon if @daemonize
@@ -134,7 +139,7 @@ module Quest
       trap_signals
       load_helper
       start_watcher
-      # Keep a sleeping thread to handle signals. 
+      # Keep a sleeping thread to handle signals.
       thread = Thread.new { sleep }
       thread.join
     end

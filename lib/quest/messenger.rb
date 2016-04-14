@@ -85,8 +85,12 @@ module Quest
       File.read(File.join(STATE_DIR, 'active_quest'))
     end
 
-    def output_file
+    def json_output_file
       File.join(STATE_DIR, "#{active_quest}.json")
+    end
+
+    def status_line_output_file
+      File.join(STATE_DIR, "active_quest_status")
     end
 
     def quest_watch
@@ -102,6 +106,8 @@ module Quest
     end
 
     def status( options = {:brief => false, :color => true, :raw => false } )
+      # If the status json isn't explicitly passed in, load it from the saved json file
+
       return raw_status if options[:raw]
 
       quest_name = options[:color] ? active_quest.cyan : active_quest
