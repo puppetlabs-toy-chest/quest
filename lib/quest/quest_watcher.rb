@@ -133,8 +133,10 @@ module Quest
 
     # This is the main function to set up and run the watcher process
     def run!
-      check_pid
-      Process.daemon if @daemonize
+      if @daemonize
+        check_pid
+        Process.daemon
+      end
       write_pid
       trap_signals
       load_helper
