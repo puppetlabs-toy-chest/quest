@@ -1,3 +1,4 @@
+require 'resolv-replace.rb'
 require 'filewatcher'
 require 'json'
 require 'grape'
