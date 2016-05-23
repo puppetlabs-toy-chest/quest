@@ -9,51 +9,54 @@ rescue
   require 'gli'
 end
 
-include GLI::App
-include Quest::Messenger
+module GLIWrapper
+  include GLI::App
+  include Quest::Messenger
+  extend self
 
-# Controllers for the quest service
-# Move to questctl
+  # Controllers for the quest service
+  # Move to questctl
 
-program_desc 'Controller for quest tool services.'
+  program_desc 'Controller for quest tool services.'
 
-desc 'Start the quest service'
-command :start do |c|
-  c.switch [:d, :daemonize], :desc => 'Daemonize the quest watcher process. Defaults to true.', :default_value => true
-  c.flag [:q, :quest_dir, 'quest_dir'], :desc => 'Specify the quest content directory.'
-  c.action do |global_options, options, args|
-    validate_quest_dir(options[:quest_dir])
-    initialize_state_dir
-    save_state(options)
-    set_first_quest
-    watcher = Quest::QuestWatcher.new(daemonize=options[:d])
-    watcher.run!
-  end
-end
-desc 'Stop the quest service'
-command :stop do |c|
-  c.action do |global_options, options, args|
-    send_quit
-  end
-end
-desc 'Restart the quest service'
-command :restart do |c|
-  c.action do |global_options, options, args|
-    send_quit
-    watcher = Quest::QuestWatcher.new
-    watcher.run!
-  end
-end
-desc 'Show the status of the quest service'
-command :status do |c|
-  c.action do |global_options, options, args|
-    if File.exist?(PIDFILE)
-      puts "active"
-      puts "PID: " + pid.to_s
-    else
-      puts "inactive"
+  desc 'Start the quest service'
+  command :start do |c|
+    c.switch [:d, :daemonize], :desc => 'Daemonize the quest watcher process. Defaults to true.', :default_value => true
+    c.flag [:q, :quest_dir, 'quest_dir'], :desc => 'Specify the quest content directory.'
+    c.action do |global_options, options, args|
+      validate_quest_dir(options[:quest_dir])
+      initialize_state_dir
+      save_state(options)
+      set_first_quest
+      watcher = Quest::QuestWatcher.new(daemonize=options[:d])
+      watcher.run!
     end
   end
-end
+  desc 'Stop the quest service'
+  command :stop do |c|
+    c.action do |global_options, options, args|
+      send_quit
+    end
+  end
+  desc 'Restart the quest service'
+  command :restart do |c|
+    c.action do |global_options, options, args|
+      send_quit
+      watcher = Quest::QuestWatcher.new
+      watcher.run!
+    end
+  end
+  desc 'Show the status of the quest service'
+  command :status do |c|
+    c.action do |global_options, options, args|
+      if File.exist?(PIDFILE)
+        puts "active"
+        puts "PID: " + pid.to_s
+      else
+        puts "inactive"
+      end
+    end
+  end
 
-exit run(ARGV)
+  exit run(ARGV)
+end
