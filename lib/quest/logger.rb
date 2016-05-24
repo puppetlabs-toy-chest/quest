@@ -1,5 +1,5 @@
-require 'logger'
+require 'mono_logger'
 
 module Quest
-  LOGGER = Logger.new(STDOUT)
+  LOGGER = MonoLogger.new(STDOUT)
 end

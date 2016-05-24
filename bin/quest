@@ -27,6 +27,7 @@ module GLIWrapper
         raise 'You must specify a quest name. Refer to the Quest Guide or use the "quest list" command.'
       end
       unless quests.include? args[0]
+        puts "test"
         raise "#{args[0]} is not a valid quest name. Refer to the Quest Guide or use the \"quest list\" command."
       end
       change_quest(args[0])
