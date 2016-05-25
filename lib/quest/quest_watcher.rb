@@ -83,16 +83,6 @@ module Quest
       write_status_line(status_line_output_path)
     end
 
-    def load_helper
-      # Require a spec_helper file if it exists
-      if File.exists?(spec_helper)
-        require spec_helper
-        Quest::LOGGER.info("Loaded spec helper at #{spec_helper}")
-      else
-        Quest::LOGGER.info("No spec_helper file found in #{quest_dir}")
-      end
-    end
-
     # This is the main function to set up and run the watcher process
     def run!
       if @daemonize

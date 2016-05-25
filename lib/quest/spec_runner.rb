@@ -9,6 +9,15 @@ module Quest
     set :os, {}
     set :backend, :exec
 
+    def load_helper
+      # Require a spec helper file if it exists
+      if File.exists?(spec_helper)
+        require spec_helper
+        Quest::LOGGER.info("Loaded spec helper at #{spec_helper}")
+      else
+        Quest::LOGGER.info("No spec_helper file found in #{quest_dir}")
+      end
+    end
 
     def run_spec(spec_path)
 
