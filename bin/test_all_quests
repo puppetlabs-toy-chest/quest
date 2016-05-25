@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+begin
+  require 'quest'
+  require
+rescue
+  require 'rubygems'
+  require 'quest'
+end
+
+include Quest::Messenger
+include Quest::SpecRunner
+
+load_helper
+
+success = 0
+quests.each do |q|
+  path = File.join(quest_dir, 'test_tests', "#{q}.sh")
+  puts path
+  `#{path}`
+end
+quests.collect do |q|
+  output_hash = run_spec(File.join(quest_dir, "#{q}_spec.rb"))
+  success = 1 unless output_hash["failure_count"] == 0
+end
+exit success
