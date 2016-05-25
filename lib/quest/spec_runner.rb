@@ -9,15 +9,15 @@ module Quest
     set :os, {}
     set :backend, :exec
 
-    def run_specs
-      Quest::LOGGER.info("run_pecs method started")
-      config = RSpec.configuration
 
+    def run_spec(spec_path)
+
+      config = RSpec.configuration
+      formatter = RSpec::Core::Formatters::JsonFormatter.new(config.output_stream)
       # Disable Standard out
       config.output_stream = File.open("/dev/null", "w")
 
       # This is some messy reach-around coding to get the JsonFormatter to work
-      formatter = RSpec::Core::Formatters::JsonFormatter.new(config.output_stream)
       reporter  = RSpec::Core::Reporter.new(config)
       config.instance_variable_set(:@reporter, reporter)
       loader = config.send(:formatter_loader)
@@ -26,21 +26,28 @@ module Quest
       # End workaround
 
       # Run the test
-      Quest::LOGGER.info("Beginning run of tests in #{spec_file}")
-      RSpec::Core::Runner.run([spec_file])
+      Quest::LOGGER.info("Beginning run of tests in #{spec_path}")
+      RSpec::Core::Runner.run([spec_path])
 
-      # Store test results
-      File.open(json_output_file, "w"){ |f| f.write(formatter.output_hash.to_json) }
-      Quest::LOGGER.info("RSpec output written to #{json_output_file}")
-
-      # Store status line output
-      status_line = status( options = {:brief => true, :color => false, :raw => false })
-      File.open(status_line_output_file, "w"){ |f| f.write(status_line) }
-      Quest::LOGGER.info("Status line written to #{status_line_output_file}")
+      output_hash = formatter.output_hash
 
       # Clean up for next spec
       RSpec.reset
       Quest::LOGGER.info("RSpec reset")
+
+      return output_hash
     end
+
+    def write_json_output(output_hash, path)
+      File.open(path, "w"){ |f| f.write(output_hash.to_json) }
+      Quest::LOGGER.info("RSpec output written to #{path}")
+    end
+
+    def write_status_line(path)
+      status_line = status( options = {:brief => true, :color => false, :raw => false })
+      File.open(path, "w"){ |f| f.write(status_line) }
+      Quest::LOGGER.info("Status line written to #{path}")
+    end
+
   end
 end

@@ -73,7 +73,7 @@ module Quest
       File.join(quest_dir, 'spec_helper.rb')
     end
 
-    def spec_file
+    def active_quest_spec_path
       File.join(quest_dir, "#{active_quest}_spec.rb")
     end
 
@@ -85,11 +85,11 @@ module Quest
       File.read(File.join(STATE_DIR, 'active_quest'))
     end
 
-    def json_output_file
+    def active_quest_json_output_path
       File.join(STATE_DIR, "#{active_quest}.json")
     end
 
-    def status_line_output_file
+    def status_line_output_path
       File.join(STATE_DIR, "active_quest_status")
     end
 
