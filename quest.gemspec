@@ -21,4 +21,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rack', '~> 1.6'
   spec.add_dependency 'grape', '~> 0.12'
   spec.add_dependency 'gli', '~> 2.12'
+  spec.add_dependency 'mono_logger', '~> 1.1.0'
 end

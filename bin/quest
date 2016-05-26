@@ -9,51 +9,55 @@ rescue
   require 'gli'
 end
 
-include GLI::App
-include Quest::Messenger
+module GLIWrapper
+  include Quest::Messenger
+  include GLI::App
+  extend self
 
-# Quest tools
+  # Quest tools
 
-program_desc 'Track the status of quests and tasks.'
+  program_desc 'Track the status of quests and tasks.'
 
-desc 'Begin a quest'
-arg :quest_name
-arg_name 'quest_name' 
-command :begin do |c|
-  c.action do |global_options, options, args|
-    if args.length < 1
-      raise 'You must specify a quest name. Refer to the Quest Guide or use the "quest list" command.'
-    end
-    unless quests.include? args[0]
-      raise "#{args[0]} is not a valid quest name. Refer to the Quest Guide or use the \"quest list\" command."
-    end
-    change_quest(args[0])
-  end
-end
-
-desc 'List available quests'
-command :list do |c|
-  c.action do |global_options, options, args|
-    puts quests
-  end
-end
-
-desc 'Show status of the current quest'
-command :status do |c|
-  c.switch [:s], :desc => 'Show status in summary form.'
-  c.switch [:n], :desc => 'Show status in summary form, no colorisation.'
-  c.switch [:j], :desc => 'Show status in JSON format. (For debugging)'
-  c.action do |global_options, options, args|
-    if options[:s]
-      puts status(:brief => true)
-    elsif options[:n]
-      puts status(:brief => true, :color => false)
-    elsif options[:j]
-      puts status(:raw => true) 
-    else
-      puts status
+  desc 'Begin a quest'
+  arg :quest_name
+  arg_name 'quest_name'
+  command :begin do |c|
+    c.action do |global_options, options, args|
+      if args.length < 1
+        raise 'You must specify a quest name. Refer to the Quest Guide or use the "quest list" command.'
+      end
+      unless quests.include? args[0]
+        puts "test"
+        raise "#{args[0]} is not a valid quest name. Refer to the Quest Guide or use the \"quest list\" command."
+      end
+      change_quest(args[0])
     end
   end
-end
 
-exit run(ARGV)
+  desc 'List available quests'
+  command :list do |c|
+    c.action do |global_options, options, args|
+      puts quests
+    end
+  end
+
+  desc 'Show status of the current quest'
+  command :status do |c|
+    c.switch [:s], :desc => 'Show status in summary form.'
+    c.switch [:n], :desc => 'Show status in summary form, no colorisation.'
+    c.switch [:j], :desc => 'Show status in JSON format. (For debugging)'
+    c.action do |global_options, options, args|
+      if options[:s]
+        puts status(:brief => true)
+      elsif options[:n]
+        puts status(:brief => true, :color => false)
+      elsif options[:j]
+        puts status(:raw => true) 
+      else
+        puts status
+      end
+    end
+  end
+
+  exit run(ARGV)
+end
