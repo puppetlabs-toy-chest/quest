@@ -66,25 +66,21 @@ module Quest
 
     def start_watcher
       Quest::LOGGER.info('Starting initial spec run')
-      run_specs
+      test_current_quest_and_write_output
       Quest::LOGGER.info("Initializing watcher watching for changes in #{quest_watch}")
       @watcher = FileWatcher.new(quest_watch)
       @watcher_thread = Thread.new(@watcher) do |watcher|
         watcher.watch do |changed_file_path|
           Quest::LOGGER.info("Watcher triggered by a change to #{changed_file_path}")
-          run_specs
+          test_current_quest_and_write_output
         end
       end
     end
 
-    def load_helper
-      # Require a spec_helper file if it exists
-      if File.exists?(spec_helper)
-        require spec_helper
-        Quest::LOGGER.info("Loaded spec helper at #{spec_helper}")
-      else
-        Quest::LOGGER.info("No spec_helper file found in #{quest_dir}")
-      end
+    def test_current_quest_and_write_output
+      spec_output_hash = run_spec(active_quest_spec_path)
+      write_json_output(spec_output_hash, active_quest_json_output_path)
+      write_status_line(status_line_output_path)
     end
 
     # This is the main function to set up and run the watcher process
