@@ -12,36 +12,38 @@ module Quest
     def load_helper
       # Require a spec helper file if it exists
       if File.exists?(spec_helper)
-        require spec_helper
+        load spec_helper
         Quest::LOGGER.info("Loaded spec helper at #{spec_helper}")
       else
         Quest::LOGGER.info("No spec_helper file found in #{quest_dir}")
       end
-    end
 
-    def run_spec(spec_path)
 
       config = RSpec.configuration
-      formatter = RSpec::Core::Formatters::JsonFormatter.new(config.output_stream)
+      @formatter = RSpec::Core::Formatters::JsonFormatter.new(config.output_stream)
       # Disable Standard out
       config.output_stream = File.open("/dev/null", "w")
 
-      # This is some messy reach-around coding to get the JsonFormatter to work
+      # This uses private methods, so it may not respect semver!! If things
+      # break with a new version, be suspicious of this code.
       reporter  = RSpec::Core::Reporter.new(config)
       config.instance_variable_set(:@reporter, reporter)
       loader = config.send(:formatter_loader)
       notifications = loader.send(:notifications_for, RSpec::Core::Formatters::JsonFormatter)
-      reporter.register_listener(formatter, *notifications)
+      reporter.register_listener(@formatter, *notifications)
       # End workaround
+    end
+
+    def run_spec(spec_path)
 
       # Run the test
       Quest::LOGGER.info("Beginning run of tests in #{spec_path}")
       RSpec::Core::Runner.run([spec_path])
 
-      output_hash = formatter.output_hash
+      output_hash = @formatter.output_hash
 
       # Clean up for next spec
-      RSpec.reset
+      RSpec.clear_examples
       Quest::LOGGER.info("RSpec reset")
 
       return output_hash
