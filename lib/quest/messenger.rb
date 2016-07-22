@@ -38,14 +38,39 @@ module Quest
       run_setup_command
     end
 
+    def show_spinner
+      spin = true
+      while spin do
+        spinner = Thread.new do
+          "|/-\\".chars.cycle.each do |char|
+          print char; sleep 1; print "\b"
+          end
+        end
+      end
+      yield.tap{ spin = false; spinner.join }
+    end
+
     def run_setup_command
       if setup_command
         begin
-          Dir.chdir(quest_dir){`#{setup_command}`}
+          puts "Setting up the #{active_quest} quest..."
+          show_spinner{
+            Dir.chdir(quest_dir){`#{setup_command}`}
+          }
+          puts "done"
         rescue
           puts "Setup for #{active_quest} failed"
         end
       end
+    end
+
+    def offer_bailout(message)
+      print "#{message} Continue? [Y/n]:"
+      raise "Cancelled" unless [ 'y', 'yes', ''].include STDIN.gets.strip.downcase
+    end
+
+    def active_quest_complete?
+      raw_status["failure_count"] == 0
     end
 
     def set_first_quest
