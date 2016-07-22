@@ -30,6 +30,9 @@ module GLIWrapper
         puts "test"
         raise "#{args[0]} is not a valid quest name. Refer to the Quest Guide or use the \"quest list\" command."
       end
+      unless active_quest_complete?
+        offer_bailout("The current quest is not complete. If you begin a new quest, your agent nodes will be reset. Your master node and Puppet code will not be affected.\n")
+      end
       change_quest(args[0])
     end
   end

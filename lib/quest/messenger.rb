@@ -41,11 +41,21 @@ module Quest
     def run_setup_command
       if setup_command
         begin
+          puts "Setting up the #{active_quest} quest..."
           Dir.chdir(quest_dir){`#{setup_command}`}
         rescue
           puts "Setup for #{active_quest} failed"
         end
       end
+    end
+
+    def offer_bailout(message)
+      print "#{message} Continue? [Y/n]:"
+      raise "Cancelled" unless [ 'y', 'yes', ''].include? STDIN.gets.strip.downcase
+    end
+
+    def active_quest_complete?
+      raw_status["summary"]["failure_count"] == 0
     end
 
     def set_first_quest
