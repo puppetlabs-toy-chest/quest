@@ -1,3 +1,5 @@
+require 'timers'
+
 module Quest
 
   class QuestWatcher
@@ -7,6 +9,7 @@ module Quest
 
     def initialize(daemonize=true)
       @daemonize = daemonize
+      @timers = Timers::Group.new
     end
 
     def restart_watcher
@@ -77,6 +80,15 @@ module Quest
       end
     end
 
+    def start_timer
+      task_timer = @timers.now_and_every(5) do
+        @timers.pause
+        test_current_quest_and_write_output
+        @timers.resume
+      end
+      loop {@timers.wait}
+    end
+
     def test_current_quest_and_write_output
       spec_output_hash = run_spec(active_quest_spec_path)
       write_json_output(spec_output_hash, active_quest_json_output_path)
@@ -92,7 +104,7 @@ module Quest
       write_pid
       trap_signals
       load_helper
-      start_watcher
+      start_timer
       # Keep a sleeping thread to handle signals.
       thread = Thread.new { sleep }
       thread.join
