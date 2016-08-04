@@ -42,7 +42,13 @@ module Quest
       if setup_command
         begin
           puts "Setting up the #{active_quest} quest..."
-          Dir.chdir(quest_dir){`#{setup_command}`}
+          Dir.chdir(quest_dir){
+            setup_io = IO.popen(setup_command) do |io|
+              io.each do |line|
+                puts line
+              end
+            end
+          }
         rescue
           puts "Setup for #{active_quest} failed"
         end
