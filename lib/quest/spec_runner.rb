@@ -11,24 +11,24 @@ module Quest
 
     def load_helper
       # Require a spec helper file if it exists
-      if File.exists?(spec_helper)
-        load spec_helper
-        Quest::LOGGER.info("Loaded spec helper at #{spec_helper}")
+      if File.exists?(SPEC_HELPER)
+        load SPEC_HELPER
+        Quest::LOGGER.info("Loaded spec helper at #{SPEC_HELPER}")
       else
-        Quest::LOGGER.info("No spec_helper file found in #{quest_dir}")
+        Quest::LOGGER.info("No spec_helper file found in #{SPEC_HELPER}")
       end
 
 
-      config = RSpec.configuration
-      @formatter = RSpec::Core::Formatters::JsonFormatter.new(config.output_stream)
+      rspec_config = RSpec.configuration
+      @formatter = RSpec::Core::Formatters::JsonFormatter.new(rspec_config.output_stream)
       # Disable Standard out
-      config.output_stream = File.open("/dev/null", "w")
+      rspec_config.output_stream = File.open("/dev/null", "w")
 
-      # This uses private methods, so it may not respect semver!! If things
+      # This uses private methods, so it may not respect semver. If things
       # break with a new version, be suspicious of this code.
-      reporter  = RSpec::Core::Reporter.new(config)
-      config.instance_variable_set(:@reporter, reporter)
-      loader = config.send(:formatter_loader)
+      reporter  = RSpec::Core::Reporter.new(rspec_config)
+      rspec_config.instance_variable_set(:@reporter, reporter)
+      loader = rspec_config.send(:formatter_loader)
       notifications = loader.send(:notifications_for, RSpec::Core::Formatters::JsonFormatter)
       reporter.register_listener(@formatter, *notifications)
       # End workaround

@@ -82,9 +82,11 @@ module Quest
 
     def start_timer
       task_timer = @timers.now_and_every(5) do
-        @timers.pause
-        test_current_quest_and_write_output
-        @timers.resume
+        unless lock_on?
+          set_lock
+          test_current_quest_and_write_output
+          release_lock
+        end
       end
       loop {@timers.wait}
     end

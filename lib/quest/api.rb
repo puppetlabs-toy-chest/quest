@@ -14,15 +14,15 @@ module Quest
       # or another data storage strategy in the future.
 
       def get_quest_progress_json(quest_name)
-        JSON.parse(File.read(File.join(Quest::Messenger::STATE_DIR, "#{quest_name}.json")))
+        JSON.parse(File.read(File.join(STATE_DIR, "#{quest_name}.json")))
       end
 
       def get_task_status_json(quest_name, task_number)
-        JSON.parse(File.read(File.join(Quest::Messenger::STATE_DIR, 'progress.json')))[quest_name][task_number]
+        JSON.parse(File.read(File.join(STATE_DIR, 'progress.json')))[quest_name][task_number]
       end
 
       def post_start_quest(quest_name)
-        File.open(File.join(Quest::Messenger::STATE_DIR, "active_quest"), "w"){ |f| f.write(quest_name) }
+        change_quest(quest_name)
       end
     end
 
@@ -62,8 +62,6 @@ module Quest
       route_param :quest do
         post do
           post_start_quest(params[:quest])
-          "TEST"
-          # TODO send a SIGHUP to the quest process
         end
       end
 

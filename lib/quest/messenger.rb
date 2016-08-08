@@ -5,34 +5,27 @@ module Quest
 
     require 'fileutils'
 
-    STATE_DIR = '/var/opt/quest'
-    PIDFILE = '/var/run/quest.pid'
+    STATE_DIR = config['state_dir'] || '/var/opt/quest'
+    PIDFILE   = config['pidfile']   || '/var/run/quest.pid'
+    TASK_DIR  = config['task_dir']  || Dir.pwd
 
-    def set_state(opts={})
-      quest_dir = opts[:quest_dir] || File.join(Dir.pwd, 'quests')
-      {
-        'quest_dir' => quest_dir,
-        'quests'    => read_json(File.join(quest_dir, 'index.json'))
-      }
-    end
+    ACTIVE_QUEST_FILE = File.join(STATE_DIR, 'active_quest')
+    STATUS_LINE_FILE  = File.join(STATE_DIR, "active_quest_status")
+    QUEST_LOCK        = File.join(STATE_DIR, "quest.lock")
+    QUEST_INDEX_FILE  = File.join(TASK_DIR, 'index.json')
+    SPEC_HELPER       = File.join(TAKS_DIR, 'spec_helper.rb')
 
-    def save_state(opts={})
-      File.open(File.join(STATE_DIR, 'state.json'), 'w') do |f|
-        f.write(set_state(opts).to_json)
-      end
-    end
-
-    def validate_quest_dir(path)
+    def validate_quest_dir
       begin
-        read_json(File.join(path, 'index.json'))
+        read_json(QUEST_INDEX_FILE)
       rescue
-        puts "No valid quest index.json file found in #{path}. Run this command from a directory containing such a file, or specify one with the --quest_dir flag."
+        puts "No valid quest index.json file found at #{QUEST_INDEX_FILE}"
         exit 1
       end
     end
 
     def set_active_quest(quest)
-      File.open(File.join(STATE_DIR, 'active_quest'), 'w') do |f|
+      File.open(ACTIVE_QUEST_FILE, 'w') do |f|
         f.write(quest)
       end
       run_setup_command
@@ -42,7 +35,7 @@ module Quest
       if setup_command
         begin
           puts "Setting up the #{active_quest} quest..."
-          Dir.chdir(quest_dir){
+          Dir.chdir(TASK_DIR){
             setup_io = IO.popen(setup_command) do |io|
               io.each do |line|
                 puts line
@@ -53,6 +46,18 @@ module Quest
           puts "Setup for #{active_quest} failed"
         end
       end
+    end
+
+    def set_lock
+      FileUtils.touch(QUEST_LOCK)
+    end
+
+    def release_lock
+      File.delete(QUEST_LOCK)
+    end
+
+    def lock_on?
+      File.exist?(QUEST_LOCK)
     end
 
     def offer_bailout(message)
@@ -77,29 +82,17 @@ module Quest
       JSON.parse(File.read(path))
     end
 
-    def get_state_hash
-      read_json(File.join(STATE_DIR, 'state.json'))
-    end
-
-    def quest_dir
-      get_state_hash['quest_dir']
-    end
-
-    def spec_helper
-      File.join(quest_dir, 'spec_helper.rb')
-    end
-
     def active_quest_spec_path
-      File.join(quest_dir, "#{active_quest}_spec.rb")
+      File.join(TASK_DIR, "#{active_quest}_spec.rb")
     end
 
     def quests
-      read_json(File.join(quest_dir, 'index.json')).keys
+      read_json(QUEST_INDEX_FILE).keys
     end
 
     def active_quest
-      set_first_quest unless File.exists?(File.join(STATE_DIR, 'active_quest'))
-      File.read(File.join(STATE_DIR, 'active_quest'))
+      set_first_quest unless File.exists?(ACTIVE_QUEST_FILE)
+      File.read(ACTIVE_QUEST_FILE)
     end
 
     def active_quest_json_output_path
@@ -111,15 +104,15 @@ module Quest
     end
 
     def quest_watch
-      read_json(File.join(quest_dir, "index.json"))[active_quest]["watch_list"]
+      read_json(QUEST_INDEX_FILE)[active_quest]["watch_list"]
     end
 
     def setup_command
-      read_json(File.join(quest_dir, "index.json"))[active_quest]["setup_command"]
+      read_json(QUEST_INDEX_FILE)[active_quest]["setup_command"]
     end
 
     def raw_status
-      JSON.parse(File.read(File.join(STATE_DIR, "#{active_quest}.json")))
+      read_json(File.join(STATE_DIR, "#{active_quest}.json"))
     end
 
     def status( options = {:brief => false, :color => true, :raw => false } )
