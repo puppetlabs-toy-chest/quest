@@ -10,8 +10,8 @@ module Quest
     TASK_DIR  = config['task_dir']  || Dir.pwd
 
     ACTIVE_QUEST_FILE = File.join(STATE_DIR, 'active_quest')
-    STATUS_LINE_FILE  = File.join(STATE_DIR, "active_quest_status")
-    QUEST_LOCK        = File.join(STATE_DIR, "quest.lock")
+    STATUS_LINE_FILE  = File.join(STATE_DIR, 'active_quest_status')
+    QUEST_LOCK        = File.join(STATE_DIR, 'quest.lock')
     QUEST_INDEX_FILE  = File.join(TASK_DIR, 'index.json')
     SPEC_HELPER       = File.join(TAKS_DIR, 'spec_helper.rb')
 

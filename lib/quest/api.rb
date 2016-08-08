@@ -21,7 +21,10 @@ module Quest
         JSON.parse(File.read(File.join(STATE_DIR, 'progress.json')))[quest_name][task_number]
       end
 
-      def post_start_quest(quest_name)
+      def post_start_quest(quest_name, confirm_change)
+        unless quests.include?(quest_name)
+          error!({ error: 'Bad Request', detail: 'invalid quest name' }, 400)
+        end
         change_quest(quest_name)
       end
     end
@@ -50,6 +53,14 @@ module Quest
       end
       get ":quest/:task" do
         get_task_status_json(params[:quest], params[:task])
+      end
+
+    end
+
+    resource :active_quest_complete do
+      desc "Check completion of active quest"
+      get do
+        active_quest_complete
       end
     end
 
