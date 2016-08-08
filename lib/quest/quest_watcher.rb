@@ -4,11 +4,12 @@ module Quest
 
   class QuestWatcher
 
-    include Quest::Messenger
     include Quest::SpecRunner
 
-    def initialize(daemonize=true)
+    def initialize(messenger, daemonize=false)
+      @messenger = messenger
       @daemonize = daemonize
+      @pidfile = messenger.pidfile
       @timers = Timers::Group.new
     end
 
@@ -18,8 +19,8 @@ module Quest
         Quest::LOGGER.info("Watcher paused")
         @watcher.finalize
         Quest::LOGGER.info("Watcher finalized pending runs")
-        @watcher.filenames = quest_watch
-        Quest::LOGGER.info("Watcher file names set to #{quest_watch}")
+        @watcher.filenames = @messenger.quest_watch
+        Quest::LOGGER.info("Watcher file names set to #{@messenger.quest_watch}")
         @watcher.resume
         Quest::LOGGER.info("Watcher resumed")
       else
@@ -29,9 +30,9 @@ module Quest
 
     def write_pid
       begin
-        File.open(PIDFILE, File::CREAT | File::EXCL | File::WRONLY){|f| f.write("#{Process.pid}") }
-        Quest::LOGGER.info("PID written to #{PIDFILE}")
-        at_exit { File.delete(PIDFILE) if File.exists?(PIDFILE) }
+        File.open(@pidfile, File::CREAT | File::EXCL | File::WRONLY){|f| f.write("#{Process.pid}") }
+        Quest::LOGGER.info("PID written to #{@pidfile}")
+        at_exit { File.delete(PIDFILE) if File.exists?(@pidfile) }
       rescue Errno::EEXIST
         check_pid
         retry
@@ -49,8 +50,8 @@ module Quest
     end
 
     def pid_status
-      return :exited unless File.exists?(PIDFILE)
-      pid = File.read(PIDFILE).to_i
+      return :exited unless File.exists?(@pidfile)
+      pid = File.read(@pidfile).to_i
       return :dead if pid == 0
       Process.kill(0, pid)
       :running
@@ -93,8 +94,8 @@ module Quest
 
     def test_current_quest_and_write_output
       spec_output_hash = run_spec(active_quest_spec_path)
-      write_json_output(spec_output_hash, active_quest_json_output_path)
-      write_status_line(status_line_output_path)
+      @messenger.write_json_output(spec_output_hash, active_quest_json_output_path)
+      @messenger.write_status_line(status_line_output_path)
     end
 
     # This is the main function to set up and run the watcher process

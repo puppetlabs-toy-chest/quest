@@ -11,11 +11,11 @@ module Quest
 
     def load_helper
       # Require a spec helper file if it exists
-      if File.exists?(SPEC_HELPER)
-        load SPEC_HELPER
-        Quest::LOGGER.info("Loaded spec helper at #{SPEC_HELPER}")
+      if File.exists?(@spec_helper)
+        load @spec_helper
+        Quest::LOGGER.info("Loaded spec helper at #{@spec_helper}")
       else
-        Quest::LOGGER.info("No spec_helper file found in #{SPEC_HELPER}")
+        Quest::LOGGER.info("No spec_helper file found in #{@spec_helper}")
       end
 
 
@@ -55,7 +55,7 @@ module Quest
     end
 
     def write_status_line(path)
-      status_line = status( options = {:brief => true, :color => false, :raw => false })
+      status_line = @messenger.status( options = {:brief => true, :color => false, :raw => false })
       File.open(path, "w"){ |f| f.write(status_line) }
       Quest::LOGGER.info("Status line written to #{path}")
     end
