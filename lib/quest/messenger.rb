@@ -98,6 +98,7 @@ module Quest
     end
 
     def active_quest
+      set_first_quest unless File.exists?(File.join(STATE_DIR, 'active_quest'))
       File.read(File.join(STATE_DIR, 'active_quest'))
     end
 

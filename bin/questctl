@@ -27,7 +27,6 @@ module GLIWrapper
       validate_quest_dir(options[:quest_dir])
       initialize_state_dir
       save_state(options)
-      set_first_quest
       watcher = Quest::QuestWatcher.new(daemonize=options[:d])
       watcher.run!
     end
