@@ -2,13 +2,16 @@ module Quest
   class API < Grape::API
     # Use Grape::API to create RESTful API endpoints for getting quest and task status
     # as JSON and change the active quest.
+    
+    def initialize(messenger)
+      @messenger = messenger
+      super
+    end
 
     version 'v1', using: :header, vendor: 'puppetlabs'
     format :json
 
     helpers do
-
-      include ::Quest::Messenger
 
       # These methods are abstracted out to make it easier to move to sqlite
       # or another data storage strategy in the future.
@@ -22,10 +25,10 @@ module Quest
       end
 
       def post_start_quest(quest_name, confirm_change)
-        unless quests.include?(quest_name)
+        unless @messenger.quests.include?(quest_name)
           error!({ error: 'Bad Request', detail: 'invalid quest name' }, 400)
         end
-        change_quest(quest_name)
+        @messenger.change_quest(quest_name)
       end
     end
 
@@ -33,7 +36,7 @@ module Quest
 
       desc "Get quest names"
       get do
-        quests
+        @messenger.quests
       end
 
       desc "Get quest progress"
@@ -60,7 +63,7 @@ module Quest
     resource :active_quest_complete do
       desc "Check completion of active quest"
       get do
-        active_quest_complete
+        @messenger.active_quest_complete
       end
     end
 

@@ -28,6 +28,7 @@ module GLIWrapper
       messenger.initialize_state_dir
       watcher = Quest::QuestWatcher.new(messenger, daemonize=options[:d])
       watcher.run!
+      Rack::Handler::WEBrick.run(Quest::API.new(messenger), {:Port => 9393, :Host => '0.0.0.0', :Bind => '0.0.0.0'})
     end
   end
   exit run(ARGV)
