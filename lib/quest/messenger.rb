@@ -54,11 +54,11 @@ module Quest
     end
 
     def quests
-      read_json(@quest_index_file).keys
+      JSON.parse(File.read(@quest_index_file)).keys
     end
 
     def setup_command
-      read_json(@quest_index_file)[active_quest]["setup_command"]
+      JSON.parse(File.read(@quest_index_file))[active_quest]["setup_command"]
     end
 
   end
