@@ -12,8 +12,8 @@ module Quest
 
     def initialize(config = {})
       @task_dir  = config['task_dir']  || Dir.pwd
-      validate_task_dir
       @quest_index_file  = File.join(@task_dir, 'index.json')
+      validate_task_dir
       @spec_helper       = File.join(@task_dir, 'spec_helper.rb')
       @quest_status = {}
       @active_quest = quests.first
