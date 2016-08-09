@@ -16,12 +16,12 @@ module Quest
     def initialize(config = {})
       @state_dir = config['state_dir'] || '/var/opt/quest'
       @pidfile   = config['pidfile']   || '/var/run/quest.pid'
-      @task_dir  = config['task_dir']
+      @task_dir  = config['task_dir']  || Dir.pwd
       @active_quest_file = File.join(@state_dir, 'active_quest')
       @status_line_file  = File.join(@state_dir, 'active_quest_status')
       @quest_lock        = File.join(@state_dir, 'quest.lock')
       @quest_index_file  = File.join(@task_dir, 'index.json')
-      @spec_helper       = File.join(@taks_dir, 'spec_helper.rb')
+      @spec_helper       = File.join(@task_dir, 'spec_helper.rb')
     end
 
     def validate_task_dir
