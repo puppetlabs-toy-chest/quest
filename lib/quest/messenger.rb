@@ -25,7 +25,7 @@ module Quest
 
     def validate_task_dir
       begin
-        read_json(@quest_index_file)
+        JSON.parse(File.read(@quest_index_file))
       rescue
         puts "No valid quest index.json file found at #{@quest_index_file}"
         exit 1
