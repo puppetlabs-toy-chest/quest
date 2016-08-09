@@ -32,7 +32,7 @@ module Quest
       begin
         File.open(@pidfile, File::CREAT | File::EXCL | File::WRONLY){|f| f.write("#{Process.pid}") }
         Quest::LOGGER.info("PID written to #{@pidfile}")
-        at_exit { File.delete(PIDFILE) if File.exists?(@pidfile) }
+        at_exit { File.delete(@pidfile) if File.exists?(@pidfile) }
       rescue Errno::EEXIST
         check_pid
         retry
@@ -42,10 +42,10 @@ module Quest
     def check_pid
       case pid_status
       when :running, :not_owned
-        puts "The quest watcher is already running. Check #{PIDFILE}"
+        puts "The quest watcher is already running. Check #{@pidfile}"
         exit 1
       when :dead
-        File.delete(PIDFILE)
+        File.delete(@pidfile)
       end
     end
 
@@ -83,19 +83,19 @@ module Quest
 
     def start_timer
       task_timer = @timers.now_and_every(5) do
-        unless lock_on?
-          set_lock
+        unless @messenger.lock_on?
+          @messenger.set_lock
           test_current_quest_and_write_output
-          release_lock
+          @messenger.release_lock
         end
       end
       loop {@timers.wait}
     end
 
     def test_current_quest_and_write_output
-      spec_output_hash = run_spec(active_quest_spec_path)
-      @messenger.write_json_output(spec_output_hash, active_quest_json_output_path)
-      @messenger.write_status_line(status_line_output_path)
+      spec_output_hash = run_spec(@messenger.active_quest_spec_path)
+      @messenger.write_json_output(spec_output_hash, @messenger.active_quest_json_output_path)
+      @messenger.write_status_line(@messenger.status_line_output_path)
     end
 
     # This is the main function to set up and run the watcher process
