@@ -20,15 +20,11 @@ module GLIWrapper
 
   desc 'Start the quest service'
   command :start do |c|
-    c.switch [:d, :daemonize], :desc => 'Daemonize the quest watcher process. Defaults to true.', :default_value => true
     c.flag [:q, :task_dir, 'task_dir'], :desc => 'Specify the task directory.'
     c.action do |global_options, options, args|
       messenger = Quest::Messenger.new( {'task_dir' => options[:task_dir]} )
-      messenger.validate_task_dir
-      messenger.initialize_state_dir
-      watcher = Quest::QuestWatcher.new(messenger, daemonize=options[:d])
+      watcher = Quest::QuestWatcher.new(messenger)
       watcher.run!
-      Rack::Handler::WEBrick.run(Quest::API.new(messenger), {:Port => 9393, :Host => '0.0.0.0', :Bind => '0.0.0.0'})
     end
   end
   exit run(ARGV)
