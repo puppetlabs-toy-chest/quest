@@ -11,7 +11,7 @@ module Quest
 
     def load_helper
       # Require a spec helper file if it exists
-      if File.exist?(@spec_helper)
+      if File.exist?(@messenger.spec_helper)
         load @messenger.spec_helper
         Quest::LOGGER.info("Loaded spec helper at #{@messenger.spec_helper}")
       else
