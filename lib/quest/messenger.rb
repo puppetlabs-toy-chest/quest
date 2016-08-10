@@ -49,8 +49,8 @@ module Quest
       end
     end
 
-    def quest_spec_path(quest)
-      File.join(@task_dir, "#{active_quest}_spec.rb")
+    def spec_path(quest)
+      File.join(@task_dir, "#{quest}_spec.rb")
     end
 
     def quests
