@@ -33,9 +33,6 @@ of your tests as the current working directory when a user begins the quest.
 ```
 {
   "welcome": {
-    "watch_list": [
-      "/root/.bash_history"
-    ],
     "setup_command": "puppet apply ./manifests/welcome.pp"
   }
 }
@@ -68,36 +65,35 @@ PROD_PATH = '/etc/puppetlabs/code/environments/production'
 MODULE_PATH = PROD_PATH + "modules/"
 ```
 
-A `watch_list.json` containing an array of the directories that the quest tool will watch
-for changes to trigger a run of the spec tests. As a minimal example, you can configure your
-bash prompt to write to bash_history at each shell prompt and run on changes to bash_history.
-
-```
-[
-  "/root/.bash_history"
-]
-```
-
 ### Use
 
-Run the `questctl start` command with the `--quest_dir` parameter to specify
-the tests directory of the content repository. The specified directory must contain
-the components specified in the **Setup** section above.
+The `questctl` command is used to start the quest service. Run it from the
+task directory, or use the `--task_dir` flag.
 
-    questctl start --quest_dir /usr/src/puppet-quest-guide/tests
+'''
+/usr/local/bin/questctl start --task_dir /usr/src/puppet-quest-guide/tests
+'''
 
-Once the questctl process is running, you can use the `quest` command
-to view the status of the active quest (`quest status`), list available quests
-(`quest list`), or change the active quest (`quest begin <quest_name>`).
+This works best when the service is managed by an init system, for example:
+
+'''
+# /etc/systemd/system/quest.service
+[Unit]
+Description=Quest tool service
+
+[Service]
+ExecStart=/usr/local/bin/questctl start --task_dir /usr/src/puppet-quest-guide/tests
+
+[Install]
+WantedBy=multi-user.target
+'''
 
 ### How it works
 
-The quest command provided by this gem allows a user to change the current quest as he or she moves
-through the content, and to see live feedback as he or she completes each task in the current quest.
-The gem also provides a API that mirrors the functionality of the quest tool, allowing a learner to
-change quests and check the status of a quest through a RESTful web interface.
+The quest service runs a set of RSpec tests for the current test in a loop,
+updating the quest status each time the test completes. The service provides
+api endpoints on port 4567 that allow access to the RSpec output and a POST
+endpoint to change the current quest.
 
-The gem's core is a daemonized process that triggers a set of spec tests a separate
-content repository (e.g the [Puppet Quest Guide](https://github.com/puppetlabs/puppet-quest-guide))
-whenever it detects changes in a relevant part of your filesystem. It uses the [filewatcher gem](https://github.com/thomasfl/filewatcher)
-for this filesystem monitoring.
+The `quest` command is a wrapper for these API endpoints.
+

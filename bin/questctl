@@ -11,7 +11,6 @@ end
 
 module GLIWrapper
   include GLI::App
-  include Quest::Messenger
   extend self
 
   # Controllers for the quest service
@@ -21,41 +20,19 @@ module GLIWrapper
 
   desc 'Start the quest service'
   command :start do |c|
-    c.switch [:d, :daemonize], :desc => 'Daemonize the quest watcher process. Defaults to true.', :default_value => true
-    c.flag [:q, :quest_dir, 'quest_dir'], :desc => 'Specify the quest content directory.'
+    c.flag [:q, :task_dir, 'task_dir'], :desc => 'Specify the task directory.'
     c.action do |global_options, options, args|
-      validate_quest_dir(options[:quest_dir])
-      initialize_state_dir
-      save_state(options)
-      watcher = Quest::QuestWatcher.new(daemonize=options[:d])
-      watcher.run!
-    end
-  end
-  desc 'Stop the quest service'
-  command :stop do |c|
-    c.action do |global_options, options, args|
-      send_quit
-    end
-  end
-  desc 'Restart the quest service'
-  command :restart do |c|
-    c.action do |global_options, options, args|
-      send_quit
-      watcher = Quest::QuestWatcher.new
-      watcher.run!
-    end
-  end
-  desc 'Show the status of the quest service'
-  command :status do |c|
-    c.action do |global_options, options, args|
-      if File.exist?(PIDFILE)
-        puts "active"
-        puts "PID: " + pid.to_s
-      else
-        puts "inactive"
+      messenger = Quest::Messenger.new( {'task_dir' => options[:task_dir]} )
+      api = Thread.new do
+        Quest::API.set :messenger, messenger
+        Quest::API.run!
       end
+      watcher = Thread.new do
+        Quest::QuestWatcher.new(messenger).run!
+      end
+      watcher.join
+      api.join
     end
   end
-
   exit run(ARGV)
 end
