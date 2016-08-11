@@ -1,73 +1,82 @@
-module Quest
-  class API < Grape::API
-    # Use Grape::API to create RESTful API endpoints for getting quest and task status
-    # as JSON and change the active quest.
+require 'sinatra/base'
 
-    version 'v1', using: :header, vendor: 'puppetlabs'
-    format :json
+module Quest
+
+  class API < Sinatra::Base
+
+    # Set defaults
+    before { content_type 'application/json' }
+    not_found { JSON.dump("error" => "Not Found") }
 
     helpers do
-
-      include ::Quest::Messenger
-
-      # These methods are abstracted out to make it easier to move to sqlite
-      # or another data storage strategy in the future.
-
-      def get_quest_progress_json(quest_name)
-        JSON.parse(File.read(File.join(Quest::Messenger::STATE_DIR, "#{quest_name}.json")))
+      def messenger
+        settings.messenger
       end
-
-      def get_task_status_json(quest_name, task_number)
-        JSON.parse(File.read(File.join(Quest::Messenger::STATE_DIR, 'progress.json')))[quest_name][task_number]
+      def quest_status
+        settings.messenger.quest_status
       end
-
-      def post_start_quest(quest_name)
-        File.open(File.join(Quest::Messenger::STATE_DIR, "active_quest"), "w"){ |f| f.write(quest_name) }
+      def active_quest
+        settings.messenger.active_quest
+      end
+      def active_quest_status
+        settings.messenger.quest_status[settings.messenger.active_quest]
       end
     end
 
-    resource :quests do
-
-      desc "Get quest names"
-      get do
-        quests
-      end
-
-      desc "Get quest progress"
-      params do
-        requires :quest, type: String, desc: "Quest name"
-      end
-      route_param :quest do
-        get do
-          get_quest_progress_json(params[:quest])
-        end
-      end
-
-      desc "Get task status"
-      params do
-        requires :quest, type: String, desc: "Quest name"
-        requires :task, type: String, desc: "Task number"
-      end
-      get ":quest/:task" do
-        get_task_status_json(params[:quest], params[:task])
-      end
+    get '/status' do
+      active_quest_status.to_json
     end
 
-    resource :start do
-
-      desc "Start quest"
-      params do
-        requires :quest, type: String, desc: "Quest name"
-      end
-      route_param :quest do
-        post do
-          post_start_quest(params[:quest])
-          "TEST"
-          # TODO send a SIGHUP to the quest process
-        end
-      end
-
+    get '/status/examples' do
+      active_quest_status[:examples].to_json
     end
 
+    get '/status/examples/:number' do
+      active_quest_status[:examples][params[:number].to_i - 1].to_json
+    end
+
+    get '/status/examples/count' do
+      content_type 'text/html'
+      active_quest_status[:examples].size
+    end
+
+    get '/status/examples/:number/description' do
+      active_quest_status[:examples][params[:number].to_i - 1][:description].to_json
+    end
+
+    get '/status/examples/:number/file_path' do
+      active_quest_status[:examples][params[:number].to_i - 1][:file_path].to_json
+    end
+
+    get '/status/examples/:number/status' do
+      active_quest_status[:examples][params[:number].to_i - 1][:status].to_json
+    end
+
+    get '/status/examples/:number/run_time' do
+      active_quest_status[:examples][params[:number].to_i - 1][:run_time].to_json
+    end
+
+    get '/status/summary' do
+      active_quest_status[:summary].to_json
+    end
+
+    get '/status/summary/failure_count' do
+      content_type 'text/html'
+      active_quest_status[:summary][:failure_count]
+    end
+
+    get '/active_quest' do
+      content_type 'text/html'
+      active_quest
+    end
+
+    get '/quests' do
+      messenger.quests.to_json
+    end
+
+    post '/begin/:quest' do
+      messenger.begin_quest(params[:quest])
+    end
   end
+
 end

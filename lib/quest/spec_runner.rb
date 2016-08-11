@@ -11,24 +11,21 @@ module Quest
 
     def load_helper
       # Require a spec helper file if it exists
-      if File.exists?(spec_helper)
-        load spec_helper
-        Quest::LOGGER.info("Loaded spec helper at #{spec_helper}")
+      if File.exist?(@messenger.spec_helper)
+        load @messenger.spec_helper
+        Quest::LOGGER.info("Loaded spec helper at #{@messenger.spec_helper}")
       else
-        Quest::LOGGER.info("No spec_helper file found in #{quest_dir}")
+        Quest::LOGGER.info("No spec_helper file found in #{@messenger.spec_helper}")
       end
 
+      rspec_config = RSpec.configuration
+      @formatter = RSpec::Core::Formatters::JsonFormatter.new(StringIO.new)
 
-      config = RSpec.configuration
-      @formatter = RSpec::Core::Formatters::JsonFormatter.new(config.output_stream)
-      # Disable Standard out
-      config.output_stream = File.open("/dev/null", "w")
-
-      # This uses private methods, so it may not respect semver!! If things
+      # This uses private methods, so it may not respect semver. If things
       # break with a new version, be suspicious of this code.
-      reporter  = RSpec::Core::Reporter.new(config)
-      config.instance_variable_set(:@reporter, reporter)
-      loader = config.send(:formatter_loader)
+      reporter  = RSpec::Core::Reporter.new(rspec_config)
+      rspec_config.instance_variable_set(:@reporter, reporter)
+      loader = rspec_config.send(:formatter_loader)
       notifications = loader.send(:notifications_for, RSpec::Core::Formatters::JsonFormatter)
       reporter.register_listener(@formatter, *notifications)
       # End workaround
@@ -47,17 +44,6 @@ module Quest
       Quest::LOGGER.info("RSpec reset")
 
       return output_hash
-    end
-
-    def write_json_output(output_hash, path)
-      File.open(path, "w"){ |f| f.write(output_hash.to_json) }
-      Quest::LOGGER.info("RSpec output written to #{path}")
-    end
-
-    def write_status_line(path)
-      status_line = status( options = {:brief => true, :color => false, :raw => false })
-      File.open(path, "w"){ |f| f.write(status_line) }
-      Quest::LOGGER.info("Status line written to #{path}")
     end
 
   end
