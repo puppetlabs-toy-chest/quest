@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name = 'quest'
-  spec.version = '1.0.0'
+  spec.version = '1.0.1'
   spec.authors = ['Kevin Henner']
   spec.email = ['kevin@puppetlabs.com']
   spec.summary = 'Track completion of configuration management tasks.'
@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   spec.executables = ['quest','questctl','test_all_quests']
   spec.require_paths = ['lib']
   spec.add_dependency 'activesupport', '~> 4.2'
-  spec.add_dependency 'serverspec', '~> 2.19'
+  spec.add_dependency 'serverspec', '~> 2.36'
   spec.add_dependency 'json', '~> 1.7'
   spec.add_dependency 'rack', '~> 1.6'
   spec.add_dependency 'gli', '~> 2.12'
