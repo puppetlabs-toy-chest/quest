@@ -17,6 +17,18 @@ module Quest
       else
         Quest::LOGGER.info("No spec_helper file found in #{@messenger.spec_helper}")
       end
+    end
+
+    def reset_rspec
+      RSpec.clear_examples
+      RSpec.reset
+
+      # RSpec creates a new constant in the ExampleGroups module whenever you
+      # load an example group. This accumulates state and will slowly leak
+      # memory if we don't clean these up.
+      RSpec::ExampleGroups.constants.each{ | c | RSpec::ExampleGroups.send(:remove_const, c) }
+      Quest::LOGGER.info("RSpec reset")
+      load_helper
 
       rspec_config = RSpec.configuration
       @formatter = RSpec::Core::Formatters::JsonFormatter.new(StringIO.new)
@@ -33,17 +45,13 @@ module Quest
 
     def run_spec(spec_path)
 
+      reset_rspec
+
       # Run the test
       Quest::LOGGER.info("Beginning run of tests in #{spec_path}")
       RSpec::Core::Runner.run([spec_path])
 
-      output_hash = @formatter.output_hash
-
-      # Clean up for next spec
-      RSpec.clear_examples
-      Quest::LOGGER.info("RSpec reset")
-
-      return output_hash
+      return @formatter.output_hash
     end
 
   end
