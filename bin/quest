@@ -17,6 +17,7 @@ module GLIWrapper
   extend self
 
   BASE_URI = URI('http://localhost:4567/')
+  OFFER_BAILOUT = false
 
   def get_path(*path)
     Net::HTTP.get(URI.join(BASE_URI, *path))
@@ -65,10 +66,11 @@ module GLIWrapper
         raise 'You must specify a quest name. Refer to the Quest Guide or use the "quest list" command.'
       elsif not JSON.parse(get_path('quests')).include? args[0]
         raise "#{args[0]} is not a valid quest name. Refer to the Quest Guide or use the \"quest list\" command."
-      elsif not get_path('status/', 'summary/', 'failure_count') == '0'
+      elsif OFFER_BAILOUT and not get_path('status/', 'summary/', 'failure_count') == '0'
         offer_bailout("The current quest is not complete. If you begin a new quest, your agent nodes will be reset. Your master node and Puppet code will not be affected.\n")
       end
       post_path({}, 'begin/', args[0])
+      puts "You have started the #{args[0]} quest."
     end
   end
 
