@@ -1,7 +1,5 @@
 require 'resolv-replace.rb'
-require 'filewatcher'
 require 'json'
-require 'grape'
 require 'quest/logger'
 require 'quest/messenger'
 require 'quest/spec_runner'
