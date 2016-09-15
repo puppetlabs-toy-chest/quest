@@ -61,8 +61,7 @@ module Quest
     end
 
     get '/status/summary/failure_count' do
-      content_type 'text/html'
-      active_quest_status[:summary][:failure_count]
+      active_quest_status[:summary][:failure_count].to_json
     end
 
     get '/active_quest' do
