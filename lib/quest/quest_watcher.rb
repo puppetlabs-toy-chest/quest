@@ -4,12 +4,15 @@ module Quest
 
   class QuestWatcher
 
-    include Quest::SpecRunner
-
     def initialize(messenger)
       @messenger = messenger
       @timers = Timers::Group.new
       @lock = Mutex.new
+    end
+
+    def run_spec(spec_path)
+      system("rspec #{spec_path} -r '/usr/src/puppet-quest-guide/tests/spec_helper.rb' -f json -o /tmp/quest_status")
+      return JSON.parse(File.read('/tmp/quest_status'))
     end
 
     def start_timer
@@ -31,7 +34,6 @@ module Quest
 
     # This is the main function to set up and run the watcher process
     def run!
-      load_helper
       start_timer
     end
 

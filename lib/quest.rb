@@ -1,8 +1,5 @@
-require 'resolv-replace.rb'
-require 'json'
 require 'quest/logger'
 require 'quest/messenger'
-require 'quest/spec_runner'
 require 'quest/quest_watcher'
 require 'quest/colorization'
 require 'quest/api'
