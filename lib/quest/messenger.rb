@@ -27,7 +27,7 @@ module Quest
     def validate_task_dir
       begin
         JSON.parse(File.read(@quest_index_file))
-      rescue
+      rescue Errno::ENOENT
         puts "No valid quest index.json file found at #{@quest_index_file}"
         exit 1
       end
