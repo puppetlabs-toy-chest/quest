@@ -14,7 +14,7 @@ module Quest
         unless @lock.locked?
           @lock.lock
           active_quest = @messenger.active_quest
-          runner = Quest::RSpecRunner.new(@messenger.spec_path(active_quest), @messenger.spec_helper, @messenger.tmp_status_file)
+          runner = Quest::RSpecRunner.new(@messenger.spec_path(active_quest), @messenger.spec_helper)
           @messenger.set_raw_status(active_quest, runner.result)
           @lock.unlock
         end
