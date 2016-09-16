@@ -11,7 +11,6 @@ module Quest
 
     attr_reader   :quest_index_file
     attr_reader   :spec_helper
-    attr_reader   :tmp_status_file
     attr_accessor :active_quest
     attr_accessor :quest_status
 
@@ -20,7 +19,6 @@ module Quest
       @quest_index_file  = File.join(@task_dir, 'index.json')
       validate_task_dir
       @spec_helper       = File.join(@task_dir, 'spec_helper.rb')
-      @tmp_status_file   = '/tmp/quest_status'
       @quest_status = {}
       @active_quest = quests.first
     end
