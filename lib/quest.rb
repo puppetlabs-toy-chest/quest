@@ -1,5 +1,6 @@
 require 'quest/logger'
 require 'quest/messenger'
+require 'quest/rspec_runner'
 require 'quest/quest_watcher'
 require 'quest/colorization'
 require 'quest/api'

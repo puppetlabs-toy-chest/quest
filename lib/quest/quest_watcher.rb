@@ -1,7 +1,6 @@
 require 'timers'
 
 module Quest
-
   class QuestWatcher
 
     def initialize(messenger)
@@ -10,26 +9,17 @@ module Quest
       @lock = Mutex.new
     end
 
-    def run_spec(spec_path)
-      system("rspec #{spec_path} -r '/usr/src/puppet-quest-guide/tests/spec_helper.rb' -f json -o /tmp/quest_status")
-      return JSON.parse(File.read('/tmp/quest_status'))
-    end
-
     def start_timer
       task_timer = @timers.now_and_every(5) do
         unless @lock.locked?
           @lock.lock
-          check_active_quest
+          active_quest = @messenger.active_quest
+          runner = Quest::RSpecRunner.new(@messenger.spec_path(active_quest), @messenger.spec_helper, @messenger.tmp_status_file)
+          @messenger.set_raw_status(active_quest, runner.result)
           @lock.unlock
         end
       end
       loop {@timers.wait}
-    end
-
-    def check_active_quest
-      quest = @messenger.active_quest
-      raw_status = run_spec(@messenger.spec_path(quest))
-      @messenger.set_raw_status(quest, raw_status)
     end
 
     # This is the main function to set up and run the watcher process
