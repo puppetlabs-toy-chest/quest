@@ -7,7 +7,6 @@ module Quest
     def initialize(spec_file, spec_helper)
       @spec_file       = spec_file
       @spec_helper     = spec_helper
-      @command         = "rspec #{spec_file} -r #{spec_helper} -f json -o #{tmp_status_file}"
       Tempfile.open('quest-rspec-runner') do |tmp_file|
         @exit_code = run_spec(@spec_file, @spec_helper, tmp_file)
         @result   = read_result(tmp_file)
