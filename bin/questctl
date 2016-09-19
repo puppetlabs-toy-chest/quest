@@ -1,13 +1,7 @@
 #!/usr/bin/env ruby
 
-begin
-  require 'quest'
-  require 'gli'
-rescue
-  require 'rubygems'
-  require 'quest'
-  require 'gli'
-end
+require 'quest'
+require 'gli'
 
 module GLIWrapper
   include GLI::App

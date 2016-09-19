@@ -1,4 +1,7 @@
 # -*- encoding : utf-8 -*-
+
+require 'json'
+
 module Quest
 
   # Shared state and methods for reading from the content directory
