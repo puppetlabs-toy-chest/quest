@@ -70,13 +70,13 @@ MODULE_PATH = PROD_PATH + "modules/"
 The `questctl` command is used to start the quest service. Run it from the
 task directory, or use the `--task_dir` flag.
 
-'''
+```
 /usr/local/bin/questctl start --task_dir /usr/src/puppet-quest-guide/tests
-'''
+```
 
 This works best when the service is managed by an init system, for example:
 
-'''
+```
 # /etc/systemd/system/quest.service
 [Unit]
 Description=Quest tool service
@@ -86,7 +86,7 @@ ExecStart=/usr/local/bin/questctl start --task_dir /usr/src/puppet-quest-guide/t
 
 [Install]
 WantedBy=multi-user.target
-'''
+```
 
 ### How it works
 
