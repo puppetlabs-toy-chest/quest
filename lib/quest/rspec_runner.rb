@@ -14,7 +14,8 @@ module Quest
     end
 
     def run_spec(spec_file, spec_helper, tmp_file)
-      command  = "rspec #{spec_file} -r #{spec_helper} -f json -o #{tmp_file}"
+      home = ENV["HOME"] || '/tmp'
+      command  = "HOME=#{home} rspec #{spec_file} -r #{spec_helper} -f json -o #{tmp_file}"
       begin
         pid = Kernel.spawn(command)
         result = ::Process.wait2(pid)
