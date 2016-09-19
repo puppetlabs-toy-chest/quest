@@ -8,8 +8,8 @@ module Quest
       @spec_file       = spec_file
       @spec_helper     = spec_helper
       Tempfile.open('quest-rspec-runner') do |tmp_file|
-        @exit_code = run_spec(@spec_file, @spec_helper, tmp_file)
-        @result   = read_result(tmp_file)
+        @exit_code = run_spec(@spec_file, @spec_helper, tmp_file.path)
+        @result   = read_result(tmp_file.path)
       end
     end
 
