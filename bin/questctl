@@ -24,6 +24,12 @@ module GLIWrapper
       watcher = Thread.new do
         Quest::QuestWatcher.new(messenger).run!
       end
+      Signal.trap("INT") do
+        puts "Exiting"
+        Thread.kill watcher
+        Thread.kill api
+        exit 130
+      end
       watcher.join
       api.join
     end

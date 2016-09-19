@@ -8,6 +8,8 @@ module Quest
     before { content_type 'application/json' }
     not_found { JSON.dump("error" => "Not Found") }
 
+    set :traps, false
+
     helpers do
       def messenger
         settings.messenger
