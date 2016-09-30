@@ -69,7 +69,7 @@ module Quest
     def begin_quest(quest)
       if quests.include?(quest)
         @active_quest = quest
-        setup_command
+        run_setup_command
       end
     end
 
