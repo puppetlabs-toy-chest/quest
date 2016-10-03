@@ -21,6 +21,7 @@ module Quest
       @spec_helper       = File.join(@task_dir, 'spec_helper.rb')
       @quest_status = {}
       @active_quest = quests.first
+      run_setup_command(@active_quest)
     end
 
     def set_raw_status(quest, raw_status_hash)
@@ -37,7 +38,7 @@ module Quest
     end
 
     def run_setup_command(quest)
-      if setup_command(quest)
+      if setup_command
         begin
           puts "Setting up the #{active_quest} quest..."
           Dir.chdir(@task_dir){
@@ -62,12 +63,13 @@ module Quest
     end
 
     def setup_command
-      JSON.parse(File.read(@quest_index_file))[active_quest]["setup_command"]
+      JSON.parse(File.read(@quest_index_file))[@active_quest]["setup_command"]
     end
 
     def begin_quest(quest)
       if quests.include?(quest)
         @active_quest = quest
+        run_setup_command(quest)
       end
     end
 
