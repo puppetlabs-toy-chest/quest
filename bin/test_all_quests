@@ -1,26 +1,21 @@
 #!/usr/bin/env ruby
 
-begin
-  require 'quest'
-  require
-rescue
-  require 'rubygems'
-  require 'quest'
+require 'quest'
+require 'net/http'
+
+BASE_URI = URI('http://localhost:4567/')
+
+def get_path(*path)
+  Net::HTTP.get(URI.join(BASE_URI, *path))
 end
 
-include Quest::Messenger
-include Quest::SpecRunner
+def post_path(form_data, *path)
+  Net::HTTP.post_form(URI.join(BASE_URI, *path), form_data)
+end
 
-load_helper
+quests = JSON.parse(get_path('quests'))
 
-success = 0
 quests.each do |q|
-  path = File.join(quest_dir, 'test_tests', "#{q}.sh")
-  puts path
-  `#{path}`
+  completion_script = File.join('/usr/src/puppet-quest-guide/tests', 'test_tests', "#{q}.sh")
+  `#{completion_script}`
 end
-quests.collect do |q|
-  output_hash = run_spec(File.join(quest_dir, "#{q}_spec.rb"))
-  success = 1 unless output_hash["failure_count"] == 0
-end
-exit success
