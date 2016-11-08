@@ -20,11 +20,21 @@ module GLIWrapper
   OFFER_BAILOUT = false
 
   def get_path(*path)
-    Net::HTTP.get(URI.join(BASE_URI, *path))
+    begin
+      Net::HTTP.get(URI.join(BASE_URI, *path))
+    rescue Errno::ECONNREFUSED => e
+      puts "You may need to restart the quest service: systemctl restart quest"
+      raise e
+    end
   end
 
   def post_path(form_data, *path)
-    Net::HTTP.post_form(URI.join(BASE_URI, *path), form_data)
+    begin
+      Net::HTTP.post_form(URI.join(BASE_URI, *path), form_data)
+    rescue Errno::ECONNREFUSED => e
+      puts "You may need to restart the quest service: systemctl restart quest"
+      raise e
+    end
   end
 
   def offer_bailout(message)
