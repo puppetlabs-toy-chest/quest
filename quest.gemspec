@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name = 'quest'
-  spec.version = '1.0.6'
+  spec.version = '1.0.7'
   spec.authors = ['Kevin Henner']
   spec.email = ['kevin@puppetlabs.com']
   spec.summary = 'Track completion of configuration management tasks.'
