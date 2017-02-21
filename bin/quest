@@ -65,6 +65,7 @@ module GLIWrapper
     output << "#{complete_count} of #{summary['example_count']} tasks."
   end
 
+  # TODO: Consider replacing with https://github.com/randrews/spinner
   def wait_spinner
     chars = %w[| / - \\]
     iter = 0
