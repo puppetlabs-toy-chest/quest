@@ -65,6 +65,23 @@ module GLIWrapper
     output << "#{complete_count} of #{summary['example_count']} tasks."
   end
 
+  # TODO: Consider replacing with https://github.com/randrews/spinner
+  def wait_spinner
+    chars = %w[| / - \\]
+    iter = 0
+    spinner = Thread.new do
+      while iter do
+        print chars[(iter+=1) % chars.length]
+        sleep 0.5
+        print "\b"
+      end
+    end
+    yield.tap{
+      iter = false
+      spinner.join
+    }
+  end
+
   program_desc 'Track the status of quests and tasks.'
 
   desc 'Begin a quest'
@@ -79,7 +96,10 @@ module GLIWrapper
       elsif OFFER_BAILOUT and not get_path('status/', 'summary/', 'failure_count') == '0'
         offer_bailout("The current quest is not complete. If you begin a new quest, your agent nodes will be reset. Your master node and Puppet code will not be affected.\n")
       end
-      post_path({}, 'begin/', args[0])
+      puts "Please wait a moment while the #{args[0]} quest is set up..."
+      wait_spinner do
+        post_path({}, 'begin/', args[0])
+      end
       puts "You have started the #{args[0]} quest."
     end
   end

@@ -77,6 +77,7 @@ module Quest
 
     post '/begin/:quest' do
       messenger.begin_quest(params[:quest])
+      "ok"
     end
   end
 
