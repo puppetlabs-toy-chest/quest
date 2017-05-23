@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name = 'quest'
-  spec.version = '1.0.8'
+  spec.version = '1.0.9'
   spec.authors = ['Kevin Henner']
   spec.email = ['kevin@puppetlabs.com']
   spec.summary = 'Track completion of configuration management tasks.'
@@ -21,8 +21,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rack', '~> 1.6'
   spec.add_dependency 'gli', '~> 2.12'
   spec.add_dependency 'mono_logger', '~> 1.1'
-  spec.add_dependency 'sinatra'
-  spec.add_dependency 'highline'
-  spec.add_dependency 'net-ssh'
-  spec.add_dependency 'timers'
+  spec.add_dependency 'sinatra', '~> 1.4'
+  spec.add_dependency 'highline', '~> 1.7'
+  spec.add_dependency 'net-ssh', '~> 4.1'
+  spec.add_dependency 'timers', '~> 4.1'
+  spec.add_dependency 'hitimes', '~> 1.2'
 end
