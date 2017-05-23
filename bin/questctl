@@ -2,6 +2,7 @@
 
 require 'quest'
 require 'gli'
+require 'webrick/https'
 
 module GLIWrapper
   include GLI::App
@@ -18,8 +19,12 @@ module GLIWrapper
     c.action do |global_options, options, args|
       messenger = Quest::Messenger.new( {'task_dir' => options[:task_dir]} )
       api = Thread.new do
+        server_settings = {
+          :RequestTimeout => 300,
+          :Port           => 4567
+        }
         Quest::API.set :messenger, messenger
-        Quest::API.run!
+        Rack::Handler::WEBrick.run Quest::API, server_settings
       end
       watcher = Thread.new do
         Quest::QuestWatcher.new(messenger).run!

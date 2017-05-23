@@ -30,7 +30,11 @@ module GLIWrapper
 
   def post_path(form_data, *path)
     begin
-      Net::HTTP.post_form(URI.join(BASE_URI, *path), form_data)
+      req = Net::HTTP::Post.new(URI.join(BASE_URI, *path), form_data)
+      req.set_form_data(form_data)
+      res = Net::HTTP.start(BASE_URI.hostname, BASE_URI.port, :read_timeout => 1000) do |http|
+        http.request(req)
+      end 
     rescue Errno::ECONNREFUSED => e
       puts "You may need to restart the quest service: systemctl restart quest"
       raise e
