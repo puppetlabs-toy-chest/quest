@@ -66,10 +66,10 @@ module GLIWrapper
 
   def summary_status
     active_quest = get_path('active_quest')
-    output = _("Quest:") + " #{active_quest} - " + _("Progress: ")
+    output = _("Quest: %{active_quest} - Progress: ") % {quest: active_quest}
     summary = JSON.parse(get_path('status/', 'summary'))
     complete_count = summary["example_count"].to_i - summary["failure_count"].to_i
-    output << complete_count.to_s + ' ' + _('of') + summary['example_count'].to_s + _(' tasks.')
+    output << _('%{complete} of %{total} tasks.') % {complete: complete_count.to_s, total: summary['examaple_count'].to_s}
   end
 
   # TODO: Consider replacing with https://github.com/randrews/spinner
