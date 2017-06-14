@@ -5,16 +5,19 @@ begin
   require 'gli'
   require 'net/http'
   require 'json'
+  require 'gettext-setup'
 rescue
   require 'rubygems'
   require 'quest'
   require 'gli'
   require 'json'
+  require 'gettext-setup'
 end
 
 module GLIWrapper
   include GLI::App
   extend self
+  GettextSetup.initialize(File.absolute_path('locales', File.dirname(__FILE__)))
 
   BASE_URI = URI('http://localhost:4567/')
   OFFER_BAILOUT = false
@@ -23,7 +26,7 @@ module GLIWrapper
     begin
       Net::HTTP.get(URI.join(BASE_URI, *path))
     rescue Errno::ECONNREFUSED => e
-      puts "You may need to restart the quest service: systemctl restart quest"
+      puts _("You may need to restart the quest service:") + " systemctl restart quest" 
       raise e
     end
   end
@@ -36,19 +39,19 @@ module GLIWrapper
         http.request(req)
       end 
     rescue Errno::ECONNREFUSED => e
-      puts "You may need to restart the quest service: systemctl restart quest"
+      puts _("You may need to restart the quest service:") + " systemctl restart quest"
       raise e
     end
   end
 
   def offer_bailout(message)
-    print "#{message} Continue? [Y/n]:"
-    raise "Cancelled" unless [ 'y', 'yes', ''].include? STDIN.gets.strip.downcase
+    print message + _("Continue?") + "[Y/n]:"
+    raise _("Cancelled") unless [ 'y', 'yes', ''].include? STDIN.gets.strip.downcase
   end
 
   def fancy_status
     active_quest = get_path('active_quest')
-    output = "Quest: #{active_quest}\n"
+    output = _("Quest: ") + "#{active_quest}\n"
     examples = JSON.parse(get_path('status/', 'examples'))
     examples.each do |example|
       if example["status"] == "passed"
@@ -63,10 +66,10 @@ module GLIWrapper
 
   def summary_status
     active_quest = get_path('active_quest')
-    output = "Quest: #{active_quest} - Progress: "
+    output = _("Quest:") + " #{active_quest} - " + _("Progress: ")
     summary = JSON.parse(get_path('status/', 'summary'))
     complete_count = summary["example_count"].to_i - summary["failure_count"].to_i
-    output << "#{complete_count} of #{summary['example_count']} tasks."
+    output << complete_count.to_s + ' ' + _('of') + summary['example_count'].to_s + _(' tasks.')
   end
 
   # TODO: Consider replacing with https://github.com/randrews/spinner
@@ -86,38 +89,38 @@ module GLIWrapper
     }
   end
 
-  program_desc 'Track the status of quests and tasks.'
+  program_desc _('Track the status of quests and tasks.')
 
-  desc 'Begin a quest'
+  desc _('Begin a quest')
   arg :quest_name
   arg_name 'quest_name'
   command :begin do |c|
     c.action do |global_options, options, args|
       if args.length < 1
-        raise 'You must specify a quest name. Refer to the Quest Guide or use the "quest list" command.'
+        raise _('You must specify a quest name. Refer to the Quest Guide or use the "quest list" command.')
       elsif not JSON.parse(get_path('quests')).include? args[0]
-        raise "#{args[0]} is not a valid quest name. Refer to the Quest Guide or use the \"quest list\" command."
+        raise _("%{quest} is not a valid quest name. Refer to the Quest Guide or use the \"quest list\" command.")  % {quest: args[0]}
       elsif OFFER_BAILOUT and not get_path('status/', 'summary/', 'failure_count') == '0'
-        offer_bailout("The current quest is not complete. If you begin a new quest, your agent nodes will be reset. Your master node and Puppet code will not be affected.\n")
+        offer_bailout(_("The current quest is not complete. If you begin a new quest, your agent nodes will be reset. Your master node and Puppet code will not be affected.\n"))
       end
-      puts "Please wait a moment while the #{args[0]} quest is set up..."
+      puts _("Please wait a moment while the %{quest} quest is set up...") % {quest: args[0]}
       wait_spinner do
         post_path({}, 'begin/', args[0])
       end
-      puts "You have started the #{args[0]} quest."
+      puts _("You have started the %{quest} quest.") % {quest: args[0]}
     end
   end
 
-  desc 'List available quests'
+  desc _('List available quests')
   command :list do |c|
     c.action do |global_options, options, args|
       puts JSON.parse(get_path('quests'))
     end
   end
 
-  desc 'Show status of the current quest'
+  desc _('Show status of the current quest')
   command :status do |c|
-    c.switch [:s], :desc => 'Show status in summary form.'
+    c.switch [:s], :desc => _('Show status in summary form.')
     c.action do |global_options, options, args|
       if options[:s]
         puts summary_status 

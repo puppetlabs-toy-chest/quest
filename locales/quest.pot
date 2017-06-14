@@ -1,0 +1,92 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017 Puppet, LLC.
+# This file is distributed under the same license as the Quest package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Quest \n"
+"Report-Msgid-Bugs-To: learningvm@puppet.com\n"
+"POT-Creation-Date: 2017-06-14 10:57-0700\n"
+"PO-Revision-Date: 2017-06-14 10:57-0700\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: ../bin/quest:29 ../bin/quest:42
+msgid "You may need to restart the quest service:"
+msgstr ""
+
+#: ../bin/quest:48
+msgid "Continue?"
+msgstr ""
+
+#: ../bin/quest:49
+msgid "Cancelled"
+msgstr ""
+
+#: ../bin/quest:54
+msgid "Quest: "
+msgstr ""
+
+#: ../bin/quest:69
+msgid "Progress: "
+msgstr ""
+
+#: ../bin/quest:69
+msgid "Quest:"
+msgstr ""
+
+#: ../bin/quest:72
+msgid "of"
+msgstr ""
+
+#: ../bin/quest:72
+msgid " tasks."
+msgstr ""
+
+#: ../bin/quest:92
+msgid "Track the status of quests and tasks."
+msgstr ""
+
+#: ../bin/quest:94
+msgid "Begin a quest"
+msgstr ""
+
+#: ../bin/quest:100
+msgid "You must specify a quest name. Refer to the Quest Guide or use the \"quest list\" command."
+msgstr ""
+
+#: ../bin/quest:102
+msgid "%{quest} is not a valid quest name. Refer to the Quest Guide or use the \"quest list\" command."
+msgstr ""
+
+#: ../bin/quest:104
+msgid ""
+"The current quest is not complete. If you begin a new quest, your agent nodes will be reset. Your master node and Puppet code will not be affected.\n"
+msgstr ""
+
+#: ../bin/quest:106
+msgid "Please wait a moment while the %{quest} quest is set up..."
+msgstr ""
+
+#: ../bin/quest:110
+msgid "You have started the %{quest} quest."
+msgstr ""
+
+#: ../bin/quest:114
+msgid "List available quests"
+msgstr ""
+
+#: ../bin/quest:121
+msgid "Show status of the current quest"
+msgstr ""
+
+#: ../bin/quest:123
+msgid "Show status in summary form."
+msgstr ""

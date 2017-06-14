@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.license = 'Apache 2.0'
 
   spec.files = %w( README.md LICENSE )
-  spec.files += Dir['{bin,lib}/**/*']
+  spec.files += Dir['{bin,lib,locales}/**/*']
   spec.executables = ['quest','questctl','test_all_quests']
   spec.require_paths = ['lib']
   spec.add_dependency 'activesupport', '~> 4.2'
