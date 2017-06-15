@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2017 Puppet, LLC.
+# Copyright (C) 2017 Puppet, Inc.
 # This file is distributed under the same license as the Quest package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
 #
