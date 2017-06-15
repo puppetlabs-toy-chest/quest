@@ -14,7 +14,7 @@ gettext:
   # The email used for sending bug reports.
   bugs_address: learningvm@puppet.com
   # The holder of the copyright.
-  copyright_holder: Puppet, LLC.
+  copyright_holder: Puppet, Inc.
   # This determines which comments in code should be eligible for translation.
   # Any comments that start with this string will be externalized. (Leave
   # empty to include all.)
