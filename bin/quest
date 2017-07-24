@@ -100,7 +100,7 @@ module GLIWrapper
       if args.length < 1
         raise _('You must specify a quest name.') + _('Refer to the Quest Guide or use the "quest list" command.')
       elsif not JSON.parse(get_path('quests')).include? args[0]
-        raise _("%{quest} is not a valid quest name.") + _('Refer to the Quest Guide or use the "quest list" command.')  % {quest: args[0]}
+        raise _("%{quest} is not a valid quest name.") % {quest: args[0]} + _('Refer to the Quest Guide or use the "quest list" command.')
       elsif OFFER_BAILOUT and not get_path('status/', 'summary/', 'failure_count') == '0'
         offer_bailout(_("The current quest is not complete. If you begin a new quest, your agent nodes will be reset. Your master node and Puppet code will not be affected.\n"))
       end
