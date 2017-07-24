@@ -18,6 +18,7 @@ module GLIWrapper
   include GLI::App
   extend self
   GettextSetup.initialize(File.expand_path('../locales', File.dirname(__FILE__)))
+  GettextSetup.negotiate_locale!(GettextSetup.candidate_locales)
 
   BASE_URI = URI('http://localhost:4567/')
   OFFER_BAILOUT = false
