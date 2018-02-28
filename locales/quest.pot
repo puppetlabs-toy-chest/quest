@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quest \n"
 "Report-Msgid-Bugs-To: learningvm@puppet.com\n"
-"POT-Creation-Date: 2018-01-17 10:08-0800\n"
-"PO-Revision-Date: 2018-01-17 10:08-0800\n"
+"POT-Creation-Date: 2018-02-27 20:16-0800\n"
+"PO-Revision-Date: 2018-02-27 20:16-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -50,12 +50,16 @@ msgstr ""
 msgid "Begin a quest"
 msgstr ""
 
+#: ../bin/quest:101 ../bin/quest:103
+msgid "Refer to the Quest Guide or use the \"quest list\" command."
+msgstr ""
+
 #: ../bin/quest:101
-msgid "You must specify a quest name. Refer to the Quest Guide or use the \"quest list\" command."
+msgid "You must specify a quest name. %{refer_to}"
 msgstr ""
 
 #: ../bin/quest:103
-msgid "%{quest} is not a valid quest name. Refer to the Quest Guide or use the \"quest list\" command."
+msgid "%{quest} is not a valid quest name. %{refer_to}"
 msgstr ""
 
 #: ../bin/quest:105
