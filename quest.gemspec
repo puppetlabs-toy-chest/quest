@@ -3,9 +3,9 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name = 'quest'
-  spec.version = '1.2.2'
-  spec.authors = ['Kevin Henner']
-  spec.email = ['kevin@puppetlabs.com']
+  spec.version = '1.2.3'
+  spec.authors = ['Services Portfolio']
+  spec.email = ['services-portfolio@puppet.com']
   spec.summary = 'Track completion of configuration management tasks.'
   spec.description = "quest uses serverspec to track completion of configuration management related learning tasks."
   spec.homepage = 'http://github.com/puppetlabs/quest'
@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'sinatra', '~> 1.4'
   spec.add_dependency 'highline', '~> 1.7'
   spec.add_dependency 'net-ssh', '~> 4.1'
-  spec.add_dependency 'timers', '~> 4.1'
+  spec.add_dependency 'timers', '~> 4.1.0'
   spec.add_dependency 'hitimes', '~> 1.2'
   spec.add_dependency 'gettext-setup', '~> 0.24'
 end
